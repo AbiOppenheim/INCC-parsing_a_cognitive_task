@@ -31,8 +31,10 @@
     var number = jsPsych.randomization.randomInt(21, 69);
     var audioFile = jsPsych.randomization.shuffle(['jspsych/examples/sound/speech_blue.mp3', 'jspsych/examples/sound/speech_red.mp3'])[0];
       
-
-    var number_tone_task = {
+    // si interrumpen este bloque  
+    // - si lo hacen previo sl delay (no vieron el numero) --> hay que terminar el delay y mostrar el numero
+    // - si lo hacen post al delay (vieron el numero) --> hay que terminar numero
+    var number_tone_task = { 
       type: jsPsychAudioKeyboardResponse,
       stimulus: audioFile,
       prompt: `<p id="prompt" style="visibility:hidden;">${number}</p>`,
@@ -50,6 +52,7 @@
 
     return [delay, number, number_tone_task];
   }
+
   var fixation = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: '<div style="font-size:60px;">+</div>',

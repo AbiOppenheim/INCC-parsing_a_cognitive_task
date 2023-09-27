@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>My experiment</title>
+    <title>My experiment</title>
     <script src="https://unpkg.com/jspsych@7.3.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script>
@@ -12,153 +13,8 @@
     <script src="./jspsych/dist/plugin-audio-keyboard-response.js"></script>
     <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
   </head>
-  <body></body>
-  <script>
-
-    /* initialize jsPsych */
-    var jsPsych = initJsPsych({
-      // show_progress_bar: true,
-      on_finish: function() {
-        jsPsych.data.displayData();
-      }
-    });
-
-    /* create timeline */
-    var timeline = [];
-
-    /* preload images */
-    // var preload = {
-    //   type: jsPsychPreload,
-    //   images: ['img/blue.png', 'img/orange.png']
-    // };
-    /* !! importante !!
-    It is used for loading files into the browser's memory before they are needed in the experiment, 
-    in order to improve stimulus and response timing, and avoid disruption to the experiment flow
-    */ 
-    // timeline.push(preload); 
-
-    var fullscreen_trial = {
-      type: jsPsychFullscreen,
-      fullscreen_mode: true
-    };
-    // timeline.push(fullscreen_trial); 
-
-    /* define welcome message trial */
-    var welcome = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: "Welcome to the experiment. Press any key to begin."
-    };
-    // timeline.push(welcome);
-
-    
-    var survey_age = {
-      type: jsPsychSurveyText,
-      questions: [
-        {prompt: '¿Cuantos años tenés?', columns: 3, required: true, name: 'Age'},
-      ]
-    };
-    // timeline.push(survey_age);
-
-    // TODO: pensar mejor como preguntar genero
-    var survey_gender_hand = {
-      type: jsPsychSurveyMultiChoice,
-      questions: [
-        {prompt: "Género en el que te identificas", name: 'Gender', options: ["Masculino", "Femenino", "otro"], required:true},
-        {prompt: "¿Que mano utilizas para escribir?", name: 'hand', options: ["izquierda", "derecha"], required:true}, 
-      ]
-    };
-    // timeline.push(survey_gender_hand);
-
-    /* define instructions trial */
-    var instructions = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: `
-        <p>In this experiment, a number will appear in the center 
-        of the screen followed by a tone.</p><p>If the number is <strong>lesser than 45</strong>, 
-        press the letter J on the keyboard as fast as you can.</p>
-        <p>If the circle is <strong>greater than 45</strong>, press the letter K 
-        as fast as you can.</p>
-        <p> And for the tone task, if the tone is <strong>low</strong>, press the letter A as fast as you can.</p>
-        <p>If the tone is <strong>high</strong>, press the letter S as fast as you can.</p>
-        <p>Press any key to begin.</p>
-      `,
-      post_trial_gap: 2000
-    };
-    // timeline.push(instructions);
-
-    var fixation = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: '<div style="font-size:60px;">+</div>',
-      choices: "NO_KEYS",
-      trial_duration: 200, // TODO: preguntar si utilizar separador y de cuanto
-      data: {
-        task: 'fixation'
-      }
-    };
-
-    /* define trial stimuli array for timeline variables */
-    var number_task = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: function () { return jsPsych.randomization.randomInt(21, 69); },
-      choices: ['j','k'],
-      data: {
-        task: 'number_task'
-      }
-    };
-
-    var tone_task = {
-      type: jsPsychAudioKeyboardResponse,
-      stimulus: function () {
-        return jsPsych.randomization.shuffle(['jspsych/examples/sound/speech_blue.mp3', 'jspsych/examples/sound/speech_red.mp3'])[0];
-      },
-      choices: ['a','s'],
-      post_trial_gap: function () {
-        return jsPsych.randomization.randomInt(0, 1025);
-      },
-      data: {
-        task: 'tone_task'
-      }
-    };
-
-    // task that simultaneously presents a number and a tone
-    var number_tone_task = {
-      type: jsPsychAudioKeyboardResponse,
-      stimulus: function () {
-        return jsPsych.randomization.shuffle(['jspsych/examples/sound/speech_blue.mp3', 'jspsych/examples/sound/speech_red.mp3'])[0];
-      },
-      prompt: function () { return jsPsych.randomization.randomInt(21, 69); },
-      choices: ['a','s'],
-      on_load: function() {
-        // wait for 3 seconds, then show the prompt
-        setTimeout(function() {
-          document.getElementById('prompt').style.visibility = "visible";
-        }, function () {
-        return jsPsych.randomization.randomInt(2600, 3000);
-      },);
-      },
-      data: {
-        task: 'number_tone_task'
-      }
-    };
-
-    /* define test procedure */
-    var task_procedure = {
-      timeline: [fixation, number_tone_task],//, tone_task],
-      repetitions: 5
-    };
-    timeline.push(task_procedure);
-
-    // TODO: AGREGAR PREGUNTA "consideras que realizaste el experimento de forma correcta?" Dar opcion de repetir.
-    // TODO: AGREGAR MENSAJE DE FIN DE EXPERIMENTO
-
-    var fullscreen_trial_exit = {
-      type: jsPsychFullscreen,
-      fullscreen_mode: false
-    };
-    // timeline.push(fullscreen_trial_exit); 
-
-    /* start the experiment */
-    jsPsych.run(timeline);
-
-  </script>
+  <body>
+  </body>
+  <script src="experiment.js"></script>
+  
 </html>

@@ -117,36 +117,254 @@ var jsPsych = initJsPsych({
 var timeline = [];
 
 /* preload audios */
-var preload_audios = {
+var preload_files = {
   type: jsPsychPreload,
-  audio: ['tones/440hz.mp3', 'tones/880hz.mp3']
+  audio: ['tones/440hz.mp3', 'tones/880hz.mp3'],
+  images: ['img/hand.png'],
 };
-timeline.push(preload_audios);
+timeline.push(preload_files);
 
-/* define welcome message trial */
-var welcome = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: "Welcome to the experiment. Press any key to begin."
+
+var intro_1 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p style="font-size:24px; color:red;">¡Bienvenidx al experimento!</p>',
+  choices: ['Continuar'],
 };
-timeline.push(welcome);
+
+var intro_2 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p style="font-size:24px; color:red;">Cosas importantes a tener en cuenta antes de comenzar el experimento:</p>',
+  choices: ['Continuar'],
+};
 
 
-/* define instructions trial */
+var intro_3 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p style="font-size:24px;">El experimento dura aproximadamente 15 minutos.</p><p style="font-size:24px;">Por favor, no cierres la ventana del navegador durante el experimento.</p><p style="font-size:24px;">Si se completa de forma parcial, no se guardará ningún resultado.</p>',
+  choices: ['Tengo 15 minutos disponibles.'],
+};
+
+var intro_4 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p style="font-size:24px;">El experimento contiene estímulos sonoros.</p>',
+  choices: ['Tengo parlantes o auriculares disponibles para realizar el experimento.'],
+};
+timeline.push(intro_1, intro_2, intro_3, intro_4);
+
+var survey_1 = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>¿Cuantos años tenés?</p>',
+  html: '<p>Tengo <input type="text" id="test-resp-box" name="response" size="10"> años</p>',
+  autofocus: 'test-resp-box'
+};
+
+
+var survey_2 = {
+  type: jsPsychSurveyMultiChoice,
+  questions: [
+    {
+      prompt: "Ingrese su género", 
+      name: 'gender', 
+      options: ['Mujer', 'Hombre', 'Otrx', 'Prefiero no decir'], 
+      required: true,
+      horizontal: true
+    }, 
+    {
+      prompt: "Ingrese la mano que utiliza para escribir", 
+      name: 'hand', 
+      options: ['Izquierda', 'Derecha'], 
+      required: true,
+      horizontal: true
+    }
+  ],
+};
+timeline.push(survey_1, survey_2);
+
+
+
 var instructions = {
-  type: jsPsychHtmlKeyboardResponse,
+  type: jsPsychHtmlButtonResponse,
   stimulus: `
-    <p>In this experiment, a number will appear in the center 
-    of the screen followed by a tone.</p><p>If the number is <strong>lesser than 45</strong>, 
-    press the letter J on the keyboard as fast as you can.</p>
-    <p>If the circle is <strong>greater than 45</strong>, press the letter K 
-    as fast as you can.</p>
-    <p> And for the tone task, if the tone is <strong>low</strong>, press the letter A as fast as you can.</p>
-    <p>If the tone is <strong>high</strong>, press the letter S as fast as you can.</p>
-    <p>Press any key to begin.</p>
+  <h1>Instrucciones del Experimento:</h1>
+    <ol style="text-align: left;">
+        <li>Vas a realizar un experimento de <strong>dos tareas simultáneas</strong>. Que tendrás que responder utilizando el teclado con las dos manos.</li>
+        <li>
+            <h4>Tarea 1: Discriminación de Tonos <strong>(mano izquierda)</strong></h4>
+            <ul>
+                <li>Escucharás un tono breve.</li>
+                <li>Tu objetivo es determinar si la frecuencia del tono es alta o baja.</li>
+                <li>Pulsa 'A' si crees que es un tono de baja frecuencia o 'S' si crees que es un tono de alta frecuencia.</li>
+            </ul>
+        </li>
+        <li>
+            <h4>Tarea 2: Comparación de Números <strong>(mano derecha)</strong></h4>
+            <ul>
+                <li>Simultáneamente o luego de un período de la presentación del tono, aparecerá un número en la pantalla.</li>
+                <li>Tu objetivo es decidir si el dígito mostrado es mayor o menor que el número 45.</li>
+                <li>Pulsa 'J' si el dígito es menor que 45 y 'K' si es mayor que 45.</li>
+            </ul>
+        </li>
+        <li><strong>Realiza ambas tareas lo más rápido y precisamente posible.</strong></li>
+        <li>Repetirás estas tareas varias veces durante el experimento.</li>
+    </ol>
+    <img src="img/hand.png"></img>
   `,
-  post_trial_gap: 2000
+  choices: ['Continuar']
 };
 timeline.push(instructions);
+
+var train_1 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p style="font-size:24px; color:red;">A continuación se realizará un breve entrenamiento de las tareas que se realizarán en el experimento.</p>',
+  choices: ['Continuar'],
+};
+
+var train_2 = {
+  type: jsPsychAudioButtonResponse,
+  stimulus: 'tones/440hz_short.mp3',
+  choices: ['Repetir', 'Lo escucho (continuar)'],
+  prompt: "<p>Esta sonando el tono de <strong>baja</strong> frecuencia. ¿Lo escuchas?</p>",
+};
+var train_3 = {
+  type: jsPsychAudioButtonResponse,
+  stimulus: 'tones/880hz_short.mp3',
+  choices: ['Repetir', 'Lo escucho (continuar)'],
+  prompt: "<p>Esta sonando el tono de <strong>alta</strong> frecuencia. ¿Lo escuchas?</p>",
+};
+
+var loop_train_2 = {
+  timeline: [train_2],
+  loop_function: function(data){
+
+      if(jsPsych.data.get().last(1).values()[0].response == 0){
+          return true;
+      } else {
+          return false;
+      }
+  }
+}
+var loop_train_3 = {
+  timeline: [train_3],
+  loop_function: function(data){
+
+      if(jsPsych.data.get().last(1).values()[0].response == 0){
+          return true;
+      } else {
+          return false;
+      }
+  }
+}
+
+var train_4 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+  <p>A continuación comenzará el entrenamiento:</p>
+  <p>Recuerda que vas a realizar un experimento de <strong>dos tareas simultáneas</strong>. Que tendrás que responder utilizando el teclado con las dos manos.</p>
+    <img src="img/hand.png"></img>
+  `,
+  choices: ['Continuar']
+};
+
+var train_5 = { 
+  type: jsPsychAudioKeyboardResponse,
+  stimulus: 'tones/440hz_short.mp3',
+  choices: all_choices,
+  response_ends_trial: true,
+  on_finish: function(data){
+    // Score the response as correct or incorrect.
+    if(jsPsych.pluginAPI.compareKeys(data.response, "a")){
+      data.correct = true;
+    } else {
+      data.correct = false; 
+    }
+  }
+};
+
+
+var correction_train_5 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+  <p style="font-size:24px; color:red;">Incorrecto</p>Este fué el tono de frecuencia baja.</p> 
+  <p>Recuerda las instrucciones:</p>
+  <img src="img/hand.png"></img>
+  `,
+  choices: ['Continuar']
+};
+
+
+var feedback_train_5 = {
+  timeline: [correction_train_5, train_5],
+  loop_function: function(data){
+    console.log(jsPsych.data.get().last(1).values()[0].correct);
+      return !jsPsych.data.get().last(1).values()[0].correct
+  }
+}
+
+var if_feedback_train_5 = {
+  timeline: [feedback_train_5],
+  conditional_function: function(data){
+    console.log(jsPsych.data.get().last(1).values()[0].correct);
+      return !jsPsych.data.get().last(1).values()[0].correct
+  }
+}
+
+
+var train_6 = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `<p id="prompt" font-size:${digit_font_size}px;">25</p>`,
+  choices: all_choices, 
+  response_ends_trial: true,
+  on_finish: function(data){
+    if(jsPsych.pluginAPI.compareKeys(data.response, "j")){
+      data.correct = true;
+    } else {
+      data.correct = false; 
+    }
+  }
+};
+
+
+var correction_train_6 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+  <p style="font-size:24px; color:red;">Incorrecto</p>El número es menor a 45.</p> 
+  <p>Recuerda las instrucciones:</p>
+  <img src="img/hand.png"></img>
+  `,
+  choices: ['Continuar']
+};
+var feedback_train_6 = {
+  timeline: [correction_train_6, train_6],
+  loop_function: function(data){
+    console.log(jsPsych.data.get().last(1).values()[0].correct);
+      return !jsPsych.data.get().last(1).values()[0].correct
+  }
+}
+
+var if_feedback_train_6 = {
+  timeline: [feedback_train_6],
+  conditional_function: function(data){
+    console.log(jsPsych.data.get().last(1).values()[0].correct);
+      return !jsPsych.data.get().last(1).values()[0].correct
+  }
+}
+
+// TODO: agregar un mejor entrenamiento (mas parecido al experimento) con fixactions
+
+
+timeline.push(train_1, loop_train_2, loop_train_3, train_4, train_5, if_feedback_train_5, train_6, if_feedback_train_6);
+
+
+var pre_experiment = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+  <p>Ahora si comenzaremos el experimento.</p>
+  <p>Muchas gracias por participar.</p>
+  `,
+  choices: ['Continuar']
+};
+
+timeline.push(pre_experiment);
 
 var fixation = {
   type: jsPsychHtmlKeyboardResponse,
@@ -158,8 +376,6 @@ var fixation = {
   }
 };
  
-
-
 
 // Function to create a random trial
 function create_random_tone_number_task() {
@@ -281,7 +497,7 @@ var if_remaining_block_was_showned_and_NOT_interrupted = {
 
 
 
-for (var i = 0; i < 5; i++) {
+for (var i = 0; i < 40; i++) {
   timeline.push(fixation);
   timeline.push(create_random_tone_number_task());
   timeline.push(if_before_delay_block);

@@ -101,7 +101,10 @@ const numerosEnPalabras = {
   100: "cien"
 };
 
-
+var all_choices = ['j','k','a','s'];
+var number_time_on_screen = 150;
+const fixation_font_size = 100;
+const digit_font_size = 40;
 /* initialize jsPsych */
 var jsPsych = initJsPsych({
   // show_progress_bar: true,
@@ -147,7 +150,7 @@ timeline.push(instructions);
 
 var fixation = {
   type: jsPsychHtmlKeyboardResponse,
-  stimulus: '<div style="font-size:60px;">X</div>',
+  stimulus: `<div style="font-size:${fixation_font_size}px;">X</div>`,
   choices: "NO_KEYS",
   trial_duration: 500, // TODO: preguntar si utilizar separador y de cuanto
   data: {
@@ -155,174 +158,137 @@ var fixation = {
   }
 };
  
-var all_choices = ['j','k','a','s'];
 
-/* define trial stimuli array for timeline variables */
-// var number_task = {
-//   type: jsPsychHtmlKeyboardResponse,
-//   stimulus: function () { return jsPsych.randomization.randomInt(21, 69); },
-//   choices: all_choices,
-//   data: {
-//     task: 'number_task'
-//   },
-//   trial_duration: 3000,
-// };
-
-// var number_task_remaining = { //
-//   type: jsPsychHtmlKeyboardResponse,
-//   // stimulus: jsPsych.data.get().last(1).values()[0].stimulus,
-//   stimulus: 3,
-//   choices: all_choices, 
-//   trial_duration: function () {return 150-jsPsych.data.get().last(1).values()[0].rt;},  
-//   response_ends_trial: false,
-//   data: {
-//     task: 'number_task_remaining'
-//   },
-// };
 
 
 // Function to create a random trial
-function create_random_number_tone_task() {
-  var delay = jsPsych.randomization.randomInt(2600, 3000);
+function create_random_tone_number_task() {
+  var delay = jsPsych.randomization.randomInt(0, 1025);
   var number = jsPsych.randomization.randomInt(21, 69);
-  var audioFile = jsPsych.randomization.shuffle(['jspsych/examples/sound/speech_blue.mp3', 'jspsych/examples/sound/speech_red.mp3'])[0];
+  var audioFile = jsPsych.randomization.shuffle(['tones/440hz_short.mp3', 'tones/880hz_short.mp3'])[0];
     
-  // si interrumpen este bloque  
-  // - si lo hacen previo sl delay (no vieron el numero) --> hay que terminar el delay y mostrar el numero
-  // - si lo hacen post al delay (vieron el numero) --> hay que terminar numero
-  var number_tone_task = { 
+  var tone_number_task = { 
     type: jsPsychAudioKeyboardResponse,
     stimulus: audioFile,
-    prompt: `<p id="prompt" style="visibility:hidden;">${number}</p>`,
+    prompt: `<p id="prompt" style="visibility:hidden;font-size:${digit_font_size}px;">${number}</p>`,
     choices: all_choices,
     on_load: function() {
-      // wait for 3 seconds, then show the prompt
       setTimeout(function() {
-        document.getElementById('prompt').style.visibility = "visible";
-      }, delay);
+        if (document.getElementById('prompt') != null){
+          document.getElementById('prompt').style.visibility = "visible";
+        }
+      }, delay); // delay before showing the number
     },
+    trial_duration: delay + number_time_on_screen, // total trial duration
+    response_ends_trial: true,  // if the participant press a key, the trial ends
     data: {
-      task: 'number_tone_task',
+      task: 'tone_number_task',
       delay: delay,
       number: number,
-      audioFile: audioFile
+      audioFile: audioFile,
+      trial_duration: delay + number_time_on_screen
     }
   };
 
-  return number_tone_task;
+  return tone_number_task;
 }
 
+function create_tone_number_task_remaining_before_delay() {
+  
+  var _delay_block = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '',
+    choices: "NO_KEYS", // important: this is to avoid the participant to press a key before the number is shown
+    trial_duration: function () {return jsPsych.data.get().last(1).values()[0].delay - jsPsych.data.get().last(1).values()[0].rt;},  
+    data: {
+      task: 'delay_block'
+    }
+  };
 
-var number_tone_task_remaining_before_delay = { 
-  type: jsPsychAudioKeyboardResponse,
-  // no audio played
-  stimulus: '',
-  // same number as before
-  prompt: `<p id="prompt" style="visibility:hidden;">${jsPsych.data.get().last(1).values()[0].number}</p>`,
-  choices: all_choices,
-  // remaining_delay_1 = delay_0 - rt_0
-  on_load: function() {
-    setTimeout(function() {
-      document.getElementById('prompt').style.visibility = "visible";
-    }, jsPsych.data.get().last(1).values()[0].delay-jsPsych.data.get().last(1).values()[0].rt); // TODO: check
-  },
-  data: {
-    task: 'number_tone_task'
-  }
-};
-
-var number_tone_task_remaining_after_delay = { 
-  type: jsPsychAudioKeyboardResponse,
-  // no audio played
-  stimulus: '',
-  // same number as before
-  prompt: `<p id="prompt" style="visibility:hidden;">${jsPsych.data.get().last(1).values()[0].number}</p>`,
-  choices: all_choices,
-  // remaining_delay_1 = delay_0 - rt_0
-  data: {
-    task: 'number_tone_task'
-  }
-};
+  var tone_number_task_remaining_before_delay = {
+    type: jsPsychHtmlKeyboardResponse,
+    // important: we are using the data of the trial 2 blocks before (the one with the tone and the number)
+    // stimulus:"",
+    // prompt:,
+    stimulus: function () {return `<p id="stimulus" style="font-size:${digit_font_size}px;">${jsPsych.data.get().last(2).values()[0].number}</p>`},
+    choices: all_choices, 
+    trial_duration: number_time_on_screen,  
+    response_ends_trial: false,
+    data: {
+      task: 'tone_number_task_remaining_before_delay',
+      number: function () {return jsPsych.data.get().last(2).values()[0].number},
+      trial_duration: function () {return jsPsych.data.get().last(2).values()[0].delay - jsPsych.data.get().last(2).values()[0].rt + number_time_on_screen;},
+      audioFile: ''
+    }
+  };
+  return [_delay_block, tone_number_task_remaining_before_delay];
+}
 
 
 var if_before_delay_block = {
-  timeline: [number_tone_task_before_delay_remaining],
+  timeline: create_tone_number_task_remaining_before_delay(),
   conditional_function: function(){
-    console.log(jsPsych.data.get().last(1).values()[0])
     if (jsPsych.data.get().last(1).values()[0].rt == null) return false; 
+    console.log(jsPsych.data.get().last(1).values()[0].rt <= jsPsych.data.get().last(1).values()[0].delay);
     return jsPsych.data.get().last(1).values()[0].rt <= jsPsych.data.get().last(1).values()[0].delay;
   }
 }
+
+var tone_number_task_remaining_after_delay = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function (){return jsPsych.data.get().last(1).values()[0].number;},
+    choices: all_choices, 
+    trial_duration: function () {return jsPsych.data.get().last(1).values()[0].trial_duration-jsPsych.data.get().last(1).values()[0].rt;},  
+    response_ends_trial: false,
+    data: {
+      task: 'tone_number_task_remaining_after_delay'
+    },
+};
 
 var if_after_delay_block = {
-  timeline: [number_tone_task_before_delay_remaining],
+  timeline: [tone_number_task_remaining_after_delay],
   conditional_function: function(){
-    console.log(jsPsych.data.get().last(1).values()[0])
     if (jsPsych.data.get().last(1).values()[0].rt == null) return false; 
-    return jsPsych.data.get().last(1).values()[0].rt <= jsPsych.data.get().last(1).values()[0].delay;
+    return jsPsych.data.get().last(1).values()[0].rt > jsPsych.data.get().last(1).values()[0].delay && jsPsych.data.get().last(1).values()[0].rt <= jsPsych.data.get().last(1).values()[0].trial_duration;
+  }
+}
+
+var empty_block = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: "",
+  choices: all_choices, 
+  trial_duration: 1300,  // outliers: trials in which the RTs to the first task were larger than 1,200 m
+  response_ends_trial: true,
+  data: {
+    task: 'empty_block'
+  },
+};
+
+var if_remaining_block_was_NOT_showned = {
+  timeline: [empty_block, empty_block],
+  conditional_function: function(){
+    return (jsPsych.data.get().last(1).values()[0].task == "tone_number_task");
+  }
+}
+
+var if_remaining_block_was_showned_and_NOT_interrupted = {
+  timeline: [empty_block],
+  conditional_function: function(){
+    if (jsPsych.data.get().last(1).values()[0].task != "tone_number_task_remaining_before_delay" && jsPsych.data.get().last(1).values()[0].task != "tone_number_task_remaining_after_delay") return false;
+    return jsPsych.data.get().last(1).values()[0].rt == null;
   }
 }
 
 
 
-// var conditional_number_task_remaining = {
-//   timeline: [number_task_remaining],
-//   conditional_function: function(){
-//     console.log(jsPsych.data.get().last(1).values());
-//     if (jsPsych.data.get().last(1).values()[0].rt == null) return false; 
-//     return jsPsych.data.get().last(1).values()[0].rt <= 150;
-//   }
-// }
-// var time_reimaining_response = { 
-//   type: jsPsychHtmlKeyboardResponse,
-//   stimulus: '',
-//   choices: all_choices, 
-//   data: {
-//     task: 'participant_responnse'
-//   },
-//   trial_duration: 3000, // outliers : 1200 ms
-// };
-
-// var conditional_time_reimaining_response = {
-//   timeline: [time_reimaining_response],
-//   conditional_function: function(){
-//     return jsPsych.data.get().last(3).values()[0].rt == null; // if first block of number task was not responded, show this trial
-//   }
-// }
-
-
-// var number_as_text_task = {
-//   type: jsPsychHtmlKeyboardResponse,
-//   stimulus: function () { return numerosEnPalabras[jsPsych.randomization.randomInt(21, 69)]; },
-//   choices: ['j','k'],
-//   data: {
-//     task: 'number_task'
-//   }
-// }
-
-// var tone_task = {
-//   type: jsPsychAudioKeyboardResponse,
-//   stimulus: function () {
-//     return jsPsych.randomization.shuffle(['tones/440hz.mp3', 'tones/880hz.mp3'])[0];
-//   },
-//   choices: ['a','s'],
-//   trial_duration: 150,
-//   trial_ends_after_audio: false,
-//   response_allowed_while_playing: true,
-//   data: {
-//     task: 'tone_task'
-//   }
-// };
-
-
-/* define test procedure */
-var test_procedure = {
-  // timeline: [fixation, tone_task, number_task, conditional_number_task_remaining, time_reimaining_response, conditional_time_reimaining_response],//, tone_task],
-  timeline: [fixation, create_random_number_tone_task(), if_before_delay_block],
-  // timeline: [fixation, number_task, conditional_number_task_remaining],
-  repetitions: 2
+for (var i = 0; i < 5; i++) {
+  timeline.push(fixation);
+  timeline.push(create_random_tone_number_task());
+  timeline.push(if_before_delay_block);
+  timeline.push(if_after_delay_block);
+  timeline.push(if_remaining_block_was_NOT_showned);
+  timeline.push(if_remaining_block_was_showned_and_NOT_interrupted);
 };
-timeline.push(test_procedure);
 
 
 /* start the experiment */

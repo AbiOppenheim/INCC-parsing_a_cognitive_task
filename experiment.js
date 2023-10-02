@@ -473,7 +473,7 @@ var empty_block = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: "",
   choices: all_choices, 
-  trial_duration: 1300,  // outliers: trials in which the RTs to the first task were larger than 1,200 m
+  // trial_duration: 1300,  // outliers: trials in which the RTs to the first task were larger than 1,200 m
   response_ends_trial: true,
   data: {
     task: 'empty_block'

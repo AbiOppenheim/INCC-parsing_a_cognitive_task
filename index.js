@@ -153,7 +153,7 @@ timeline.push(intro_1, intro_2, intro_3, intro_4);
 
 var survey_1 = {
   type: jsPsychSurveyHtmlForm,
-  preamble: '<p>¿Cuantos años tenés?</p>',
+  preamble: '<p>¿Cuántos años tenés?</p>',
   html: '<p>Tengo <input type="text" id="test-resp-box" name="response" size="10"> años</p>',
   autofocus: 'test-resp-box'
 };
@@ -187,7 +187,8 @@ var instructions = {
   stimulus: `
   <h1>Instrucciones del Experimento:</h1>
     <ol style="text-align: left;">
-        <li>Vas a realizar un experimento de <strong>dos tareas simultáneas</strong>. Que tendrás que responder utilizando el teclado con las dos manos.</li>
+        <li>Vas a realizar un experimento de <strong>dos tareas simultáneas</strong>. Tendrás que responder utilizando el teclado con las dos manos.</li>
+        <li>A continuación describiremos las tareas. No te preocupes, luego de eso vas a tener unos minutos de prueba para familiarizarte con ellas.</li>
         <li>
             <h4>Tarea 1: Discriminación de Tonos <strong>(mano izquierda)</strong></h4>
             <ul>
@@ -349,7 +350,7 @@ var if_feedback_train_6 = {
   }
 }
 
-// TODO: agregar un mejor entrenamiento (mas parecido al experimento) con fixactions
+// TODO: agregar un mejor entrenamiento (mas parecido al experimento) con fixations
 
 
 timeline.push(train_1, loop_train_2, loop_train_3, train_4, train_5, if_feedback_train_5, train_6, if_feedback_train_6);

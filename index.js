@@ -1,24 +1,4 @@
 const numerosEnPalabras = {
-  1: "uno",
-  2: "dos",
-  3: "tres",
-  4: "cuatro",
-  5: "cinco",
-  6: "seis",
-  7: "siete",
-  8: "ocho",
-  9: "nueve",
-  10: "diez",
-  11: "once",
-  12: "doce",
-  13: "trece",
-  14: "catorce",
-  15: "quince",
-  16: "dieciseis",
-  17: "diecisiete",
-  18: "dieciocho",
-  19: "diecinueve",
-  20: "veinte",
   21: "veintiuno",
   22: "veintidós",
   23: "veintitres",
@@ -43,7 +23,6 @@ const numerosEnPalabras = {
   42: "cuarenta y dos",
   43: "cuarenta y tres",
   44: "cuarenta y cuatro",
-  45: "cuarenta y cinco",
   46: "cuarenta y seis",
   47: "cuarenta y siete",
   48: "cuarenta y ocho",
@@ -68,37 +47,6 @@ const numerosEnPalabras = {
   67: "sesenta y siete",
   68: "sesenta y ocho",
   69: "sesenta y nueve",
-  70: "setenta",
-  71: "setenta y uno",
-  72: "setenta y dos",
-  73: "setenta y tres",
-  74: "setenta y cuatro",
-  75: "setenta y cinco",
-  76: "setenta y seis",
-  77: "setenta y siete",
-  78: "setenta y ocho",
-  79: "setenta y nueve",
-  80: "ochenta",
-  81: "ochenta y uno",
-  82: "ochenta y dos",
-  83: "ochenta y tres",
-  84: "ochenta y cuatro",
-  85: "ochenta y cinco",
-  86: "ochenta y seis",
-  87: "ochenta y siete",
-  88: "ochenta y ocho",
-  89: "ochenta y nueve",
-  90: "noventa",
-  91: "noventa y uno",
-  92: "noventa y dos",
-  93: "noventa y tres",
-  94: "noventa y cuatro",
-  95: "noventa y cinco",
-  96: "noventa y seis",
-  97: "noventa y siete",
-  98: "noventa y ocho",
-  99: "noventa y nueve",
-  100: "cien"
 };
 
 var all_choices = ['j','k','a','s'];
@@ -116,10 +64,14 @@ var jsPsych = initJsPsych({
 /* create timeline */
 var timeline = [];
 
+// TODO:
+// 1. agregar un mejor entrenamiento (mas parecido al experimento) con fixations
+// 4. agregar los 4 bloques con instrucciones intermedias
+
 /* preload audios */
 var preload_files = {
   type: jsPsychPreload,
-  audio: ['tones/440hz.mp3', 'tones/880hz.mp3'],
+  audio: ['tones/440hz_short.mp3', 'tones/880hz_short.mp3'],
   images: ['img/hand.png'],
 };
 timeline.push(preload_files);
@@ -149,7 +101,7 @@ var intro_4 = {
   stimulus: '<p style="font-size:24px;">El experimento contiene estímulos sonoros.</p>',
   choices: ['Tengo parlantes o auriculares disponibles para realizar el experimento.'],
 };
-timeline.push(intro_1, intro_2, intro_3, intro_4);
+// timeline.push(intro_1, intro_2, intro_3, intro_4);
 
 var survey_1 = {
   type: jsPsychSurveyHtmlForm,
@@ -178,7 +130,7 @@ var survey_2 = {
     }
   ],
 };
-timeline.push(survey_1, survey_2);
+// timeline.push(survey_1, survey_2);
 
 
 
@@ -212,7 +164,27 @@ var instructions = {
   `,
   choices: ['Continuar']
 };
-timeline.push(instructions);
+// timeline.push(instructions);
+
+var instructions_word = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+  <p>Atención: en las siguientes tareas los números serán presentados escritos con <strong>palabras</strong>.</p>
+
+  <img src="img/hand.png"></img>
+  `,
+  choices: ['Continuar']
+};
+
+var instructions_digit = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+  <p>Atención: en las siguientes tareas los números serán presentados escritos con <strong>dígitos</strong>.</p>
+
+  <img src="img/hand.png"></img>
+  `,
+  choices: ['Continuar']
+};
 
 var train_1 = {
   type: jsPsychHtmlButtonResponse,
@@ -224,13 +196,13 @@ var train_2 = {
   type: jsPsychAudioButtonResponse,
   stimulus: 'tones/440hz_short.mp3',
   choices: ['Repetir', 'Lo escucho (continuar)'],
-  prompt: "<p>Esta sonando el tono de <strong>baja</strong> frecuencia. ¿Lo escuchas?</p>",
+  prompt: "<p>Acaba de sonar el tono de <strong>baja</strong> frecuencia. ¿Lo escuchaste?</p>",
 };
 var train_3 = {
   type: jsPsychAudioButtonResponse,
   stimulus: 'tones/880hz_short.mp3',
   choices: ['Repetir', 'Lo escucho (continuar)'],
-  prompt: "<p>Esta sonando el tono de <strong>alta</strong> frecuencia. ¿Lo escuchas?</p>",
+  prompt: "<p>Acaba de sonar el tono de <strong>alta</strong> frecuencia. ¿Lo escuchaste?</p>",
 };
 
 var loop_train_2 = {
@@ -350,10 +322,9 @@ var if_feedback_train_6 = {
   }
 }
 
-// TODO: agregar un mejor entrenamiento (mas parecido al experimento) con fixations
 
 
-timeline.push(train_1, loop_train_2, loop_train_3, train_4, train_5, if_feedback_train_5, train_6, if_feedback_train_6);
+// timeline.push(train_1, loop_train_2, loop_train_3, train_4, train_5, if_feedback_train_5, train_6, if_feedback_train_6);
 
 
 var pre_experiment = {
@@ -371,7 +342,7 @@ var fixation = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `<div style="font-size:${fixation_font_size}px;">X</div>`,
   choices: "NO_KEYS",
-  trial_duration: 500, // TODO: preguntar si utilizar separador y de cuanto
+  trial_duration: jsPsych.randomization.randomInt(2600, 3000),
   data: {
     task: 'fixation'
   }
@@ -379,10 +350,15 @@ var fixation = {
  
 
 // Function to create a random trial
-function create_random_tone_number_task() {
-  var delay = jsPsych.randomization.randomInt(0, 1025);
-  var number = jsPsych.randomization.randomInt(21, 69);
-  var audioFile = jsPsych.randomization.shuffle(['tones/440hz_short.mp3', 'tones/880hz_short.mp3'])[0];
+function create_random_tone_number_task(is_word = false) {
+  let delay = jsPsych.randomization.randomInt(0, 1025);
+  let number = null;
+  if (!is_word) {
+    number = jsPsych.randomization.sampleWithoutReplacement(Object.keys(numerosEnPalabras), 1)[0];
+  } else {
+    number = jsPsych.randomization.sampleWithoutReplacement(Object.values(numerosEnPalabras), 1)[0];
+  }
+  let audioFile = jsPsych.randomization.shuffle(['tones/440hz_short.mp3', 'tones/880hz_short.mp3'])[0];
     
   var tone_number_task = { 
     type: jsPsychAudioKeyboardResponse,
@@ -453,7 +429,7 @@ var if_before_delay_block = {
 
 var tone_number_task_remaining_after_delay = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: function (){return jsPsych.data.get().last(1).values()[0].number;},
+    stimulus: function () {return `<p id="stimulus" style="font-size:${digit_font_size}px;">${jsPsych.data.get().last(1).values()[0].number}</p>`},
     choices: all_choices, 
     trial_duration: function () {return jsPsych.data.get().last(1).values()[0].trial_duration-jsPsych.data.get().last(1).values()[0].rt;},  
     response_ends_trial: false,
@@ -497,16 +473,50 @@ var if_remaining_block_was_showned_and_NOT_interrupted = {
 }
 
 
+function create_digit_block_with_instructions() {
+  for (let i = 0; i < 1; i++) { // DIGIT BLOCK WITH INSTRUCTIONS
+    timeline.push(instructions_digit);
+    for (let i = 0; i < 2; i++) { // DIGIT BLOCK
+      timeline.push(fixation);
+      timeline.push(create_random_tone_number_task(false));
+      timeline.push(if_before_delay_block);
+      timeline.push(if_after_delay_block); 
+      timeline.push(if_remaining_block_was_NOT_showned); 
+      timeline.push(if_remaining_block_was_showned_and_NOT_interrupted);
+    }
+  }
+}
 
-for (var i = 0; i < 40; i++) {
-  timeline.push(fixation);
-  timeline.push(create_random_tone_number_task());
-  timeline.push(if_before_delay_block);
-  timeline.push(if_after_delay_block);
-  timeline.push(if_remaining_block_was_NOT_showned);
-  timeline.push(if_remaining_block_was_showned_and_NOT_interrupted);
-};
+function create_word_block_with_instructions() {
+  for (let i = 0; i < 1; i++) { // WORD BLOCK WITH INSTRUCTIONS
+    timeline.push(instructions_word);
+    for (let i = 0; i < 2; i++) { // WORD BLOCK
+      timeline.push(fixation);
+      timeline.push(create_random_tone_number_task(true));
+      timeline.push(if_before_delay_block);
+      timeline.push(if_after_delay_block); 
+      timeline.push(if_remaining_block_was_NOT_showned); 
+      timeline.push(if_remaining_block_was_showned_and_NOT_interrupted);
+    }
+  }
+}
 
+// var version = jsPsych.randomization.sampleWithoutReplacement([1,2],1)[0];
+// if(version == 1){
+//   timeline.push(create_digit_block_with_instructions(), create_word_block_with_instructions());
+// }else {
+//   timeline.push(create_word_block_with_instructions(), create_digit_block_with_instructions());
+// };
+
+
+var final_trial = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `<p>¡Terminaste el experimento! Muchísimas gracias por participar :)</p>
+    <p>Si te interesa saber de que se trata lo que acabaste de hacer, podes hacer click <a href="https://abioppenheim.github.io/INCC-parsing_a_cognitive_task/">aquí.</a></p>`,
+  choices: "NO_KEYS"
+}
+
+timeline.push(final_trial);
 
 /* start the experiment */
 jsPsych.run(timeline);

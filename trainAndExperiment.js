@@ -322,8 +322,11 @@ function create_empty_block(training = false){
     type: jsPsychHtmlKeyboardResponse,
     stimulus: "",
     choices: all_choices,
-    // outliers: trials in which the RTs to the first task were larger than 1,200 m
-    trial_duration: 5000, // Lo seteo en 5000 porque pasaba que si no llegabas a responder checkAnswer() daba False y cagaba todo.
+    // outliers: trials in which the RTs to the first task were larger than 1,200 ms
+    trial_duration: function () {
+      if (training) return 10000; // si estamos en training no importan los outliers.
+      return 1200;
+    },
     response_ends_trial: true,
     data: {
       task: 'empty_block',

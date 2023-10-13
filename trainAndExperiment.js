@@ -53,7 +53,7 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
-var all_choices = ['j','k','a','s'];
+var all_choices = ['j','k','a','z'];
 var number_time_on_screen = 150;
 const fixation_font_size = 100;
 const digit_font_size = 40;
@@ -66,7 +66,6 @@ var jsPsych = initJsPsych({
   }
 });
 
-
 /* preload audios */
 var preload_files = {
   type: jsPsychPreload,
@@ -74,35 +73,180 @@ var preload_files = {
   images: ['img/hand.png'],
 };
 
-var instructionsMessage = {
+var intro_1 = { // FULLSIZE BLOCK: SPECIAL TYPE 
+  type: jsPsychFullscreen,
+  message: '<p style="font-size: 24px; color: blue;">¡Te damos la bienvenida al experimento!</p><br><p>(La página se colocará en modo pantalla completa durante todo el experimento)</p>',
+  button_label:'Continuar',
+  fullscreen_mode: true
+}
+
+
+// var intro_1 = {
+//   type: jsPsychHtmlButtonResponse,
+//   stimulus: '<p style="font-size:24px; color:red;">¡Bienvenidx al experimento!</p>',
+//   choices: ['Continuar'],
+// };
+
+var intro_2 = {
   type: jsPsychHtmlButtonResponse,
-  stimulus: `
-  <h3>Instrucciones del Experimento:</h3>
-    <ol style="text-align: left;">
-        <li>Vas a realizar un experimento de <strong>dos tareas simult\u00E1neas</strong>. Tendr\u00E1s que responder utilizando el teclado con las dos manos.</li>
-        <li>A continuaci\u00F3n describiremos las tareas. No te preocupes, luego de eso vas a tener unos minutos de prueba para familiarizarte con ellas.</li>
-        <li>
-            <p>Tarea 1: Discriminaci\u00F3n de Tonos <strong>(mano izquierda)</strong></p>
-            <ul><li>Escuchar\u00E1s un tono breve.</li>
-                <li>Tu objetivo es determinar si la frecuencia del tono es alta o baja.</li>
-                <li>Pulsa 'A' si crees que es un tono de baja frecuencia o 'S' si crees que es un tono de alta frecuencia.</li>
-            </ul>
-        </li>
-        <li>
-            <p>Tarea 2: Comparaci\u00F3n de N\u00FAmeros <strong>(mano derecha)</strong></p>
-            <ul>
-                <li>Simult\u00E1neamente o luego de un per\u00EDodo de la presentaci\u00F3n del tono, aparecer\u00E1 un n\u00FAmero en la pantalla.</li>
-                <li>Tu objetivo es decidir si el d\u00EDgito mostrado es mayor o menor que el n\u00FAmero 45.</li>
-                <li>Pulsa 'J' si el d\u00EDgito es menor que 45 y 'K' si es mayor que 45.</li>
-            </ul>
-        </li>
-        <li><strong>Realiza ambas tareas lo m\u00E1s r\u00E1pido y precisamente posible.</strong></li>
-        <li>Repetir\u00E1s estas tareas varias veces durante el experimento.</li>
-    </ol>
-    <img src="img/hand.png" width="600" height="350"></img>
-  `,
-  choices: ['Continuar']
+  stimulus: '<p style="font-size:24px; color:red;">Cosas importantes a tener en cuenta antes de comenzar el experimento:</p>',
+  choices: ['Continuar'],
 };
+
+
+var intro_3 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p style="font-size:24px;">El experimento dura aproximadamente 15 minutos.</p><p style="font-size:24px;">Por favor, no cierres la ventana del navegador durante el experimento.</p><p style="font-size:24px;">Si se completa de forma parcial, no se guardará ningún resultado.</p>',
+  choices: ['Tengo 15 minutos disponibles.'],
+};
+
+var intro_4 = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: '<p style="font-size:24px;">El experimento contiene estímulos sonoros.</p>',
+  choices: ['Tengo parlantes o auriculares disponibles para realizar el experimento.'],
+};
+
+
+var survey_1 = {
+  type: jsPsychSurveyHtmlForm,
+  preamble: '<p>¿Cuantos años tenés?</p>',
+  html: '<p>Tengo <input type="text" id="test-resp-box" name="response" size="10"> años</p>',
+  autofocus: 'test-resp-box'
+};
+
+
+var survey_2 = {
+  type: jsPsychSurveyMultiChoice,
+  questions: [
+    {
+      prompt: "Ingrese su género", 
+      name: 'gender', 
+      options: ['Mujer', 'Hombre', 'Otrx', 'Prefiero no decir'], 
+      required: true,
+      horizontal: true
+    }, 
+    {
+      prompt: "Ingrese la mano que utiliza para escribir", 
+      name: 'hand', 
+      options: ['Izquierda', 'Derecha'], 
+      required: true,
+      horizontal: true
+    }
+  ],
+};
+
+const instances = {
+  0: "Recordamos las instrucciones antes de comenzar el primer experimento con dígitos",
+  1: "Recordamos las instrucciones antes de comenzar el último experimento con dígitos",
+  2: "Recordamos las instrucciones antes de comenzar el primer experimento con palabras",
+  3: "Recordamos las instrucciones antes de comenzar el último experimento con palabras",
+  4: "Instrucciones"
+}
+
+const instances2 = {
+  0: "",
+  1: "",
+  2: "",
+  3: "",
+  4: "No te preocupes, lo que le sigue es una prueba de entrenamiento para que te familiarices con las tareas.",
+}
+
+// Function to play audio
+function playAudio(audioFile) {
+  var audio = new Audio(audioFile);
+  audio.play();
+}
+
+function showInstructionsMessage(insance){
+  // if insance is none, instane = 4
+  if (insance == null) insance = 4;
+
+  var instructionsMessage = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+    <style>
+    .button-3 {
+      appearance: none;
+      background-color: #2ea44f;
+      border: 1px solid rgba(27, 31, 35, .15);
+      border-radius: 6px;
+      box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+      box-sizing: border-box;
+      color: #fff;
+      cursor: pointer;
+      display: inline-block;
+      font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      padding: 6px 16px;
+      position: relative;
+      text-align: center;
+      text-decoration: none;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .button-3:focus:not(:focus-visible):not(.focus-visible) {
+      box-shadow: none;
+      outline: none;
+    }
+
+    .button-3:hover {
+      background-color: #2c974b;
+    }
+
+    .button-3:focus {
+      box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+      outline: none;
+    }
+
+    .button-3:disabled {
+      background-color: #94d3a2;
+      border-color: rgba(27, 31, 35, .1);
+      color: rgba(255, 255, 255, .8);
+      cursor: default;
+    }
+
+    .button-3:active {
+      background-color: #298e46;
+      box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+    }
+  </style>
+      <h3>${instances[insance]}</h1>
+      <ul style="text-align: left;">
+        <li>Vas a realizar un experimento de <strong>dos tareas simultáneas</strong>. Tendrás que responder utilizando el teclado con las dos manos.</li>
+        <li>A continuación describiremos las tareas. ${instances2[insance]}</li>
+        <li>
+          Tarea 1: Discriminación de Tonos <strong>(mano izquierda)</strong>
+          <ul>
+            <li>Escucharás un tono breve.</li>
+            <li>Tu objetivo es determinar si el tono es de <button class="button-3" role="button" onclick="playAudio('tones/440hz_short.mp3')">baja Frecuencia</button> o <button class="button-3" role="button"  onclick="playAudio('tones/880hz_short.mp3')">alta Frecuencia</button>.</li>
+            <li>Pulsa 'A' si crees que es un tono de baja frecuencia o 'S' si crees que es un tono de alta frecuencia.</li>
+          </ul>
+        </li>
+        <li>
+          Tarea 2: Comparación de Números <strong>(mano derecha)</strong>
+          <ul>
+            <li>Simultáneamente o luego de un período de la presentación del tono, aparecerá un número en la pantalla.</li>
+            <li>Tu objetivo es decidir si el dígito mostrado es mayor o menor que el número 45.</li>
+            <li>Pulsa 'J' si el dígito es menor que 45 y 'K' si es mayor que 45.</li>
+          </ul>
+        </li>
+        <li><strong>Realiza ambas tareas lo más rápido y precisamente posible.</strong></li>
+        <li>Repetirás estas tareas varias veces durante el experimento.</li>
+      </ul>
+      <img src="img/hand.png"></img>
+    `,
+    choices: ['Continuar']
+  };
+  return instructionsMessage;
+}
+
+
 
 var changeDigitToWordsMessage = {
   type: jsPsychHtmlButtonResponse,
@@ -114,6 +258,7 @@ var changeDigitToWordsMessage = {
   `,
   choices: ['Continuar']
 }
+
 
 
 var endTrainingMessage = {
@@ -136,14 +281,17 @@ var tryAgainMessage = {
   choices: ['Continuar']
 }
 
+
+var exit_fullscreen = {
+  type: jsPsychFullscreen,
+  fullscreen_mode: false,
+  delay_after: 0
+}
 var endExperimentMessage = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `
-  <h1> Fin del Experimento </h1>
-  <p> \u00A1Felicitaciones, terminaste el experimento! </p>
-  <p> Muchas gracias por participar. </p>
-  `,
-  choices: ['Finalizar']
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `<p>¡Terminaste el experimento! Muchísimas gracias por participar :)</p>
+    <p>Si te interesa saber de que se trata lo que acabaste de hacer, podes hacer click <a href="https://abioppenheim.github.io/INCC-parsing_a_cognitive_task/">aquí.</a></p>`,
+  choices: "NO_KEYS"
 }
 
 var fixation = {
@@ -194,10 +342,10 @@ function check_answer(data){
   if (response == null) return true;
 
   if (response == "a"){
-    return stimulus == "tones/440hz_short.mp3";
-  }
-  if (response == "s"){
     return stimulus == "tones/880hz_short.mp3";
+  }
+  if (response == "z"){
+    return stimulus == "tones/440hz_short.mp3";
   }
   if (response == "j"){
     return number < 45;
@@ -396,7 +544,7 @@ function if_remaining_block_was_shown_and_not_interrupted(training = false){
 function create_digit_block_with_instructions() {
   let timeline = [];
   for (let i = 0; i < 2; i++) { // DIGIT BLOCK WITH INSTRUCTIONS (2)
-    timeline.push(instructionsMessage);
+    timeline.push(showInstructionsMessage(i));
     //timeline.push(instructions_digit);
     for (let i = 0; i < 2; i++) { // DIGIT BLOCK (40)
       timeline.push(fixation);
@@ -413,7 +561,7 @@ function create_digit_block_with_instructions() {
 function create_word_block_with_instructions() {
   let timeline = [];
   for (let i = 0; i < 2; i++) { // WORD BLOCK WITH INSTRUCTIONS (2)
-    timeline.push(instructionsMessage);
+    timeline.push(showInstructionsMessage(i+2));
     //timeline.push(instructions_word);
     for (let i = 0; i < 2; i++) { // WORD BLOCK (40)
       timeline.push(fixation);
@@ -459,7 +607,7 @@ function check_answer_of_last_5_blocks(){
 
 // Estos dos bloques van a estar en loop.
 var if_feedback_train = {
-  timeline: [tryAgainMessage, instructionsMessage],
+  timeline: [tryAgainMessage, showInstructionsMessage()],
   conditional_function: () => !check_answer_of_last_5_blocks()
 }
 
@@ -474,7 +622,7 @@ function create_main_inner_loop(words, delay){
 // Este bloque lo puse porque sino había unos llamados recursivos para repetir los entrenamientos que no funcionaban.
 function if_feedback_train_2(words, delay) {
   var if_feedback_train_2 = {
-    timeline: [tryAgainMessage, instructionsMessage].concat(create_main_inner_loop(words, delay)),
+    timeline: [tryAgainMessage, showInstructionsMessage()].concat(create_main_inner_loop(words, delay)),
     conditional_function: () => !check_answer_of_last_5_blocks()
   }
   return if_feedback_train_2;
@@ -482,25 +630,23 @@ function if_feedback_train_2(words, delay) {
 
 
 
-
-
-function create_main_loop(){
-  let delaysToUse = [1000, 500, 300, 150, 50];
+function create_training_loop(){
+  let delaysToUse = [1000, 500, 150, 50]; // elimino delay de 300
   let timeline = [];
   
-  timeline.push(instructionsMessage);
+  timeline.push(showInstructionsMessage());
 
-  for (let i = 0; i < delaysToUse.length; i++) {
-    timeline.push(create_main_inner_loop(words=false, delay=delaysToUse[i]));
-    timeline.push(if_feedback_train_2(words=false, delay=delaysToUse[i]));
-  }
+  // for (let i = 0; i < delaysToUse.length; i++) {
+  //   timeline.push(create_main_inner_loop(words=false, delay=delaysToUse[i]));
+  //   timeline.push(if_feedback_train_2(words=false, delay=delaysToUse[i]));
+  // }
 
   timeline.push(changeDigitToWordsMessage);
 
-  for (let i = 0; i < delaysToUse.length; i++) {
-    timeline.push(create_main_inner_loop(words=true, delay=delaysToUse[i]));
-    timeline.push(if_feedback_train_2(words=true, delay=delaysToUse[i]));
-  }
+  // for (let i = 0; i < 1; i++) { // dejo solamente el delay de 1000
+  //   timeline.push(create_main_inner_loop(words=true, delay=delaysToUse[i]));
+  //   timeline.push(if_feedback_train_2(words=true, delay=delaysToUse[i]));
+  // }
 
   timeline.push(endTrainingMessage);
   return timeline;
@@ -508,12 +654,18 @@ function create_main_loop(){
 
 /* create timeline */
 var timeline = [];
+
 timeline.push(preload_files);
 
-timeline = timeline.concat(create_main_loop());
+timeline.push(intro_1);//, intro_2, intro_3, intro_4);
+// timeline.push(survey_1, survey_2);
+
+timeline = timeline.concat(create_training_loop());
 timeline = timeline.concat(create_digit_block_with_instructions());
 timeline = timeline.concat(create_word_block_with_instructions());
+timeline.push(exit_fullscreen);
 timeline.push(endExperimentMessage);
+
 
 /* start the experiment */
 jsPsych.run(timeline);

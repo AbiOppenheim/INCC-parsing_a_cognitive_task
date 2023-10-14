@@ -653,19 +653,19 @@ function create_training_loop(){
 }
 
 /* create timeline */
-var timeline = [];
+// var timeline = [];
 
-timeline.push(preload_files);
+// timeline.push(preload_files);
 
-timeline.push(intro_1);//, intro_2, intro_3, intro_4);
+// timeline.push(intro_1);//, intro_2, intro_3, intro_4);
 // timeline.push(survey_1, survey_2);
 
-timeline = timeline.concat(create_training_loop());
-timeline = timeline.concat(create_digit_block_with_instructions());
-timeline = timeline.concat(create_word_block_with_instructions());
-timeline.push(exit_fullscreen);
-timeline.push(endExperimentMessage);
+// timeline = timeline.concat(create_training_loop());
+// timeline = timeline.concat(create_digit_block_with_instructions());
+// timeline = timeline.concat(create_word_block_with_instructions());
+// timeline.push(exit_fullscreen);
+// timeline.push(endExperimentMessage);
 
 
 /* start the experiment */
-jsPsych.run(timeline);
+// jsPsych.run(timeline);

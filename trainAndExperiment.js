@@ -53,18 +53,13 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
-var all_choices = ['j','k','a','z'];
+var all_choices = ['j','k','a','s'];
 var number_time_on_screen = 150;
 const fixation_font_size = 100;
 const digit_font_size = 40;
 
 /* initialize jsPsych */
-var jsPsych = initJsPsych({
-  // show_progress_bar: true,
-  on_finish: function() {
-    jsPsych.data.displayData();
-  }
-});
+var jsPsych = initJsPsych();
 
 /* preload audios */
 var preload_files = {
@@ -289,10 +284,10 @@ function check_answer(data){
   if (response == null) return true;
 
   if (response == "a"){
-    return stimulus == "tones/880hz_short.mp3";
-  }
-  if (response == "z"){
     return stimulus == "tones/440hz_short.mp3";
+  }
+  if (response == "s"){
+    return stimulus == "tones/880hz_short.mp3";
   }
   if (response == "j"){
     return number < 45;
@@ -600,8 +595,14 @@ timeline.push(intro_1, intro_2, intro_3, intro_4, loop_intro_5, loop_intro_6);
 timeline.push(survey_1, survey_2);
 
 timeline = timeline.concat(create_training_loop());
-timeline = timeline.concat(create_digit_block_with_instructions());
-timeline = timeline.concat(create_word_block_with_instructions());
+var version = jsPsych.randomization.sampleWithoutReplacement([1,2],1)[0];
+if(version == 1){
+  timeline = timeline.concat(create_digit_block_with_instructions());
+  timeline = timeline.concat(create_word_block_with_instructions());
+}else {
+  timeline = timeline.concat(create_word_block_with_instructions());
+  timeline = timeline.concat(create_digit_block_with_instructions());
+};
 timeline.push(exit_fullscreen);
 timeline.push(endExperimentMessage);
 

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    .button-68 {
+      /* Add the CSS styles for the buttons here */
+      appearance: none;
+      backface-visibility: hidden;
+      background-color: #27ae60;
+      border-radius: 8px;
+      border-style: none;
+      box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
+      box-sizing: border-box;
+      color: #fff;
+      cursor: pointer;
+      display: inline-block;
+      font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: normal;
+      line-height: 1.5;
+      outline: none;
+      overflow: hidden;
+      width: 400px; /* Set a fixed width */
+      padding: 13px 20px;
+      position: relative;
+      text-align: center;
+      text-decoration: none;
+      transform: translate3d(0, 0, 0);
+      transition: all 0.3s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    .button-68:hover {
+      background-color: #1e8449;
+      opacity: 1;
+      transform: translateY(0);
+      transition-duration: 0.35s;
+    }
+
+    .button-68:active {
+      transform: translateY(2px);
+      transition-duration: 0.35s;
+    }
+
+    .button-68:hover {
+      box-shadow: rgba(39, 174, 96, 0.2) 0 6px 12px;
+    }
+
+    #continueButton {
+      display: none;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <h3>Instrucciones</h3>
+  <!-- Continue button (initially hidden) -->
+  <button type="button" id="continueButton" class="button-68">Continuar</button>
+  <ul style="text-align: left;">
+    <li>Vas a realizar un experimento de <strong>dos tareas simultáneas</strong>. Tendrás que responder utilizando el teclado con las dos manos.</li>
+    <li>A continuación describiremos las tareas. No te preocupes, lo que le sigue es una prueba de entrenamiento para que te familiarices con las tareas.</li>
+    <li>
+      Tarea 1: Discriminación de Tonos <strong>(mano izquierda)</strong>
+      <ul>
+        <li>Escucharás un tono breve.</li>
+        <li>Tu objetivo es determinar si el tono es de <strong>baja Frecuencia</strong> o <strong>alta Frecuencia</strong>
+      </ul>
+    </li>
+    <li>
+      Tarea 2: Comparación de Números <strong>(mano derecha)</strong>
+      <ul>
+        <li>Simultáneamente o luego de un período de la presentación del tono, aparecerá un número en la pantalla.</li>
+        <li>Tu objetivo es decidir si el dígito mostrado es mayor o menor que el número 45.</li>
+        <li>Pulsa 'J' si el dígito es menor que 45 y 'K' si es mayor que 45.</li>
+      </ul>
+    </li>
+    <li><strong>Realiza ambas tareas lo más rápido y precisamente posible.</strong></li>
+    <li>Repetirás estas tareas varias veces durante el experimento.</li>
+  </ul>
+  
+  <!-- Two buttons with specified functionality -->
+  <button type="button" id="buttonLowFrequency" class="button-68"> Reproducir el tono de frecuencia baja <i class="fas fa-play"></i> </button>
+  <button type="button" id="buttonHighFrequency" class="button-68">Reproducir el tono de frecuencia alta <i class="fas fa-play"></i> </button>
+
+  <!-- <img src="img/hand.png"></img> in new line aligned in center-->
+  <img src="img/hand.png" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"></img>
+  
+
+  <script>
+    // if 'lowFrequencyButton' has not already been declared then const lowFrequencyButton = document.getElementById("buttonLowFrequency");
+    
+    let lowFrequencyButton = document.getElementById("buttonLowFrequency");
+    let highFrequencyButton = document.getElementById("buttonHighFrequency");
+    let continueButton = document.getElementById("continueButton");
+
+    let lowFrequencyClicked = false;
+    let highFrequencyClicked = false;
+
+    lowFrequencyButton.addEventListener("click", () => {
+      const audio = new Audio("tones/440hz_short.mp3");
+      audio.play();
+      lowFrequencyButton.innerHTML = 'Repetir el tono de frecuencia baja <i class="fas fa-redo"></i>';
+      lowFrequencyButton.style.backgroundColor = "#01471e"; // Change to your desired color
+      lowFrequencyClicked = true;
+      showContinueButton();
+    });
+
+    highFrequencyButton.addEventListener("click", () => {
+      const audio = new Audio("tones/880hz_short.mp3");
+      audio.play();
+      highFrequencyButton.innerHTML = 'Repetir el tono de frecuencia alta <i class="fas fa-redo"></i> ';
+      highFrequencyButton.style.backgroundColor = "#01471e"; // Change to your desired color
+      highFrequencyClicked = true;
+      showContinueButton();
+    });
+
+    function showContinueButton() {
+      if (lowFrequencyClicked && highFrequencyClicked) {
+        continueButton.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>

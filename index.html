@@ -4,14 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+
+
         body {
             font-family: 'Source Serif Pro', serif;
             line-height: 1.6;
-            margin: 20px;
+            margin: 10px;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            font-size: 20px;
+            font-size: 22px;
+        }
+
+        .title {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 20%);
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        a {
+        color: rgb(103, 103, 103);
+        text-decoration: none;
+        text-transform: none;
         }
 
         p {
@@ -19,6 +45,14 @@
         }
         .italic {
             font-style: italic;
+        }
+
+        .show-content .content {
+            opacity: 1;
+        }
+
+        .hide-content .title {
+            opacity: 0;
         }
 
         .right-align {
@@ -40,19 +74,29 @@
                 rgba(255, 224, 0, 0.7) 95%,
                 rgba(255, 224, 0, 0.1)
             );
-            }
-
+        }
+        .highlight-green {
+            border-radius: 1em 0 1em 0;
+            background-image: linear-gradient(
+                -100deg,
+                rgba(21, 255, 0, 0.2),
+                rgba(98, 255, 101, 0.7) 95%,
+                rgba(55, 255, 0, 0.1)
+            );
+        }
     </style>
-    <title>Texto en HTML</title>
+    <title>Parsing a Cognitive Task</title>
 </head>
 <body>
+    <section class="title">
     <p class="italic">
         cocino, mientras tomo mate, mientras escucho un podcast, mientras respondo mensajes, mientras pienso en que me voy a poner para ir al cumple, mientras escribo la lista del súper, mientras leo twitter, mientras me acuerdo de devolverle el taper a mi vieja, mientras…
     </p>
     <p class="right-align">
-        total, soy multitasking.
+        <span class="highlight-green">total, soy multitasking.</span>
     </p>
-
+    </section>
+    <section class="content">
     <p>
         El repertorio potencial de la conciencia es gigantesco. Todo el tiempo, un gran flujo de estimulación sensorial llega a nuestros sentidos. En cualquier momento, con un cambio de atención, podemos hacernos conscientes de algo nuevo.
         <br>
@@ -72,13 +116,13 @@
     <p>
         Las pruebas demuestran que incluso en ese tipo de casos todavía estamos sumamente limitados. Nunca procesamos en realidad dos elementos no relacionados de manera consciente justo en el mismo momento. Cuando intentamos prestar atención a dos cosas a la vez, la impresión de que nuestra conciencia es inmediata y que está trabajando online con ambos estímulos sólo es una ilusión. En realidad, la mente subjetiva no los percibe de manera simultánea. Se accede a uno de ellos, que entra en la percepción consciente, pero el otro debe esperar.
         <br>
-        Este cuello de botella crea en el procesamiento un retraso fácil de medir, al que con acierto se conoce como <em>“período refractario psicológico”</em> (<a href="#footnote1" id="ref1">Sigman y Dehaene, 2005</a>). Mientras la mente consciente procesa un primer elemento en un nivel consciente, parece ser temporariamente refractaria a otros inputs sucesivos y, por eso, atrasarse bastante en procesarlos. Mientras se ocupa del primer elemento, el segundo queda merodeando en un retén inconsciente. Permanece allí hasta que se completa ese otro procesamiento.
+        Este cuello de botella crea en el procesamiento un retraso fácil de medir, al que con acierto se conoce como <em>“período refractario psicológico”</em> <a href="#footnote1" id="ref1">[1]</a>. Mientras la mente consciente procesa un primer elemento en un nivel consciente, parece ser temporariamente refractaria a otros inputs sucesivos y, por eso, atrasarse bastante en procesarlos. Mientras se ocupa del primer elemento, el segundo queda merodeando en un retén inconsciente. Permanece allí hasta que se completa ese otro procesamiento.
     </p>
 
     <p>
-        Siempre que la mente consciente está ocupada, el resto de los candidatos de la percepción tiene que esperar en un retén inconsciente, y la espera es riesgosa: en cualquier momento, por ruido interno, por pensamientos distractores, o por el ingreso de otros estímulos, un elemento retenido puede borrarse y desvanecerse de la percepción (el parpadeo).
+        Siempre que la mente consciente está ocupada, el resto de los candidatos de la percepción tiene que esperar en un retén inconsciente, y la espera es riesgosa: en cualquier momento, por ruido interno, por pensamientos distractores, o por el ingreso de otros estímulos, un elemento retenido puede borrarse y desvanecerse de la percepción.
     </p>
-
+<!-- cambio de sección -->
     <p>
         Cuando se presentan dos tareas simultáneamente (o secuencialmente con un breve intervalo), se ha observado sistemáticamente un retraso en la ejecución de la segunda tarea.
     </p>
@@ -124,16 +168,44 @@
         <br>
         - Si el retraso ∆ es pequeño, el tiempo de respuesta para la Tarea 2 (desde el inicio del ensayo) representado por la línea negra no cambia. Este es el punto interesante del modelo. Aunque la <span style="color: #6fb87d; font-weight: bold;">fase perceptual de la Tarea 2</span> comienza poco después de la presentación de la Tarea 1, el tiempo de completitud de la Tarea 2 no cambia. Esto ocurre porque la <span style="color: #efb34c; font-weight: bold;">fase central de la segunda tarea</span> "espera" a la finalización de la <span style="color: #d94f45; font-weight: bold;">fase central de la primera tarea</span>, lo que crea una ventana de tiempo inactiva entre la fase perceptual y la fase central de la segunda tarea.
     </p>
-    
 
-    
+    <!-- add a horizonal line -->
+    <hr>
 
+    <p>
+        Este trabajo se realiza en el contexto de la materia "Introducción a la Neurociencia Cognitiva y Computacional" dictado en la Facultad de Ciencias Naturales y Exactas de la UBA. Los resultados obtenidos a través de este experimento serán analizados con el propósito de replicar el artículo mencionado anteriormente <a href="#footnote1" id="ref1">[1]</a>. Si te pareció interesante, te invitamos a compartirlo, ya que cuantas más personas participen, más contribuirán a la obtención de un conjunto de datos significativo.
+    </p>
+
+    <p class="right-align">
+        Muchas gracias, <br>
+        Pedro Ballestero, Ian Grinspan y Abi Oppenheim.
+    </p>
+    
+    <hr>
+    
     <!-- Footnote -->
     <div id="footnote1">
         <sup>[1]</sup> SIGMAN, Mariano; DEHAENE, Stanislas. Parsing a cognitive task: a characterization of the mind's bottleneck. PLoS biology, 2005, vol. 3, no 2, p. e37.
     </div>
     <div id="footnote2">
+        <sup>[2]</sup> DEHAENE, Stanislas. La conciencia en el cerebro: descifrando el enigma de cómo el cerebro elabora nuestros pensamientos. Siglo XXI Editores, 2019.
+    <div id="footnote2">
         <sup>*</sup> Quizás hayas observado que no se te pidió responder presionando dos veces. Esto se debe a que en esta réplica del experimento, no se consideró el factor de la complejidad de la respuesta.
     </div>
+    </section>
+    <script>
+        window.addEventListener("scroll", () => {
+          const title = document.querySelector(".title");
+          const content = document.querySelector(".content");
+      
+          if (window.pageYOffset > 200) {
+            document.body.classList.add("show-content");
+            document.body.classList.add("hide-content");
+          } else {
+            document.body.classList.remove("show-content");
+            document.body.classList.remove("hide-content");
+          }
+        });
+      </script>
 </body>
 </html>

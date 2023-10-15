@@ -56,7 +56,8 @@ function getKeyByValue(object, value) {
 var all_choices = ['j','k','a','s'];
 var number_time_on_screen = 150;
 const fixation_font_size = 100;
-const digit_font_size = 40;
+const digit_font_size = 100;
+const word_font_size = 60;
 
 /* initialize jsPsych */
 var jsPsych = initJsPsych();
@@ -210,6 +211,8 @@ var endTrainingMessage = {
   stimulus: `
   <h1> Fin del Entrenamiento </h1>
   <p> \u00A1Felicitaciones, terminaste el entrenamiento! Ahora vamos a comenzar con el experimento. </p>
+  <p> Es importante tener en cuenta que consta de cuatro bloques.</p>
+  <p> Podés aprovechar los momentos entre bloques para tomar un breve descanso o tomar agua entre cada uno</p>
   <p> Record\u00E1 que ten\u00E9s que responder lo m\u00E1s r\u00E1pido que puedas, pero sin equivocarte. </p>
   `,
   choices: ['Continuar']
@@ -302,12 +305,13 @@ function check_answer(data){
 // Function to create a random trial
 function create_random_tone_number_task(training = false, is_word = false, delay) {
   if (delay == null) delay = jsPsych.randomization.randomInt(0, 1025);
-
+  font_size = digit_font_size;
   let number = null;
   if (!is_word) {
     number = choose_random_digit_number();
   } else {
     number = choose_random_word_number();
+    font_size = word_font_size;
   }
 
   let audioFile = choose_random_tone();
@@ -315,7 +319,7 @@ function create_random_tone_number_task(training = false, is_word = false, delay
   var tone_number_task = { 
     type: jsPsychAudioKeyboardResponse,
     stimulus: audioFile,
-    prompt: `<p id="prompt" style="visibility:hidden;font-size:${digit_font_size}px;">${number}</p>`,
+    prompt: `<p id="prompt" style="visibility:hidden;font-size:${font_size}px;">${number}</p>`,
     choices: all_choices,
     on_load: function() {
       setTimeout(function() {
@@ -332,7 +336,8 @@ function create_random_tone_number_task(training = false, is_word = false, delay
       stimulus: audioFile,
       number: number,
       audioFile: audioFile,
-      trial_duration: delay + number_time_on_screen
+      trial_duration: delay + number_time_on_screen,
+      font_size: font_size
     },
     on_finish:function(data){
       if (!training) return;
@@ -359,16 +364,17 @@ function create_tone_number_task_remaining_before_delay(training = false) {
   var tone_number_task_remaining_before_delay = {
     type: jsPsychHtmlKeyboardResponse,
     // important: we are using the data of the trial 2 blocks before (the one with the tone and the number)
-    stimulus: function () {return `<p id="stimulus" style="font-size:${digit_font_size}px;">${getDataTwoBlocksBefore().number}</p>`},
+    stimulus: function () {return `<p id="stimulus" style="font-size:${getDataTwoBlocksBefore().font_size}px;">${getDataTwoBlocksBefore().number}</p>`},
     choices: all_choices, 
     trial_duration: number_time_on_screen,  
     response_ends_trial: false,
     data: {
       task: 'tone_number_task_remaining_before_delay',
-      stimulus: function () {return `<p id="stimulus" style="font-size:${digit_font_size}px;">${getDataTwoBlocksBefore().number}</p>`},
+      stimulus: function () {return `<p id="stimulus" style="font-size:${getDataTwoBlocksBefore().font_size}px;">${getDataTwoBlocksBefore().number}</p>`},
       number: function () {return getDataTwoBlocksBefore().number},
       trial_duration: function () {return getDataTwoBlocksBefore().delay - getDataTwoBlocksBefore().rt + number_time_on_screen;},
-      audioFile: ''
+      audioFile: '',
+      font_size: function () {return getDataTwoBlocksBefore().font_size},
     },
     on_finish:function(data){
       if (!training) return;
@@ -383,13 +389,14 @@ function tone_number_task_remaining_after_delay(training = false) {
   // bug: faltaba agregar el number en la data de aca
   var tone_number_task_remaining_after_delay = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: function () {return `<p id="stimulus" style="font-size:${digit_font_size}px;">${getLastBlockData().number}</p>`},
+    stimulus: function () {return `<p id="stimulus" style="font-size:${getLastBlockData().font_size}px;">${getLastBlockData().number}</p>`},
     choices: all_choices, 
     trial_duration: function () {return getLastBlockData().trial_duration-getLastBlockData().rt;},  
     response_ends_trial: false,
     data: {
       number: function () {return getLastBlockData().number},
       task: 'tone_number_task_remaining_after_delay',
+      font_size: function () {return getLastBlockData().font_size},
     },
     on_finish:function(data){
       if (!training) return;
@@ -586,6 +593,7 @@ function create_training_loop(){
   return timeline;
 }
 
+
 /* create timeline */
 var timeline = [];
 
@@ -595,6 +603,7 @@ timeline.push(intro_1, intro_2, intro_3, intro_4, loop_intro_5, loop_intro_6);
 timeline.push(survey_1, survey_2);
 
 timeline = timeline.concat(create_training_loop());
+
 var version = jsPsych.randomization.sampleWithoutReplacement([1,2],1)[0];
 if(version == 1){
   timeline = timeline.concat(create_digit_block_with_instructions());

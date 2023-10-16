@@ -95,38 +95,67 @@
   
 
   <script>
-    // if 'lowFrequencyButton' has not already been declared then const lowFrequencyButton = document.getElementById("buttonLowFrequency");
-    
-    let lowFrequencyButton = document.getElementById("buttonLowFrequency");
-    let highFrequencyButton = document.getElementById("buttonHighFrequency");
-    let continueButton = document.getElementById("continueButton");
-
-    let lowFrequencyClicked = false;
-    let highFrequencyClicked = false;
-
-    lowFrequencyButton.addEventListener("click", () => {
-      const audio = new Audio("tones/440hz_short.mp3");
-      audio.play();
-      lowFrequencyButton.innerHTML = 'Repetir el tono de frecuencia baja <i class="fas fa-redo"></i>';
-      lowFrequencyButton.style.backgroundColor = "#01471e"; // Change to your desired color
-      lowFrequencyClicked = true;
-      showContinueButton();
-    });
-
-    highFrequencyButton.addEventListener("click", () => {
-      const audio = new Audio("tones/880hz_short.mp3");
-      audio.play();
-      highFrequencyButton.innerHTML = 'Repetir el tono de frecuencia alta <i class="fas fa-redo"></i> ';
-      highFrequencyButton.style.backgroundColor = "#01471e"; // Change to your desired color
-      highFrequencyClicked = true;
-      showContinueButton();
-    });
-
-    function showContinueButton() {
-      if (lowFrequencyClicked && highFrequencyClicked) {
-        continueButton.style.display = "block";
+    (function () {
+      if ('AudioContext' in window || 'webkitAudioContext' in window) {
+        var URLLow = 'tones/440hz_short.mp3';
+        var URLHigh = 'tones/880hz_short.mp3';
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        var context = new AudioContext();
+        var lowFrequencyBuffer, highFrequencyBuffer;
+        var lowFrequencyClicked = false;
+        var highFrequencyClicked = false;
+  
+        // Load low-frequency audio
+        window.fetch(URLLow)
+          .then(response => response.arrayBuffer())
+          .then(arrayBuffer => context.decodeAudioData(arrayBuffer, audioBuffer => {
+            lowFrequencyBuffer = audioBuffer;
+          }))
+          .catch(error => console.error(error));
+  
+        // Load high-frequency audio
+        window.fetch(URLHigh)
+          .then(response => response.arrayBuffer())
+          .then(arrayBuffer => context.decodeAudioData(arrayBuffer, audioBuffer => {
+            highFrequencyBuffer = audioBuffer;
+          }))
+          .catch(error => console.error(error));
+  
+        // Button click event listeners
+        var lowFrequencyButton = document.getElementById("buttonLowFrequency");
+        lowFrequencyButton.addEventListener("click", () => {
+          play(lowFrequencyBuffer);
+          lowFrequencyButton.innerHTML = 'Repetir el tono de frecuencia baja <i class="fas fa-redo"></i>';
+          lowFrequencyButton.style.backgroundColor = "#01471e";
+          lowFrequencyClicked = true;
+          showContinueButton();
+        });
+  
+        var highFrequencyButton = document.getElementById("buttonHighFrequency");
+        highFrequencyButton.addEventListener("click", () => {
+          play(highFrequencyBuffer);
+          highFrequencyButton.innerHTML = 'Repetir el tono de frecuencia alta <i class="fas fa-redo"></i>';
+          highFrequencyButton.style.backgroundColor = "#01471e";
+          highFrequencyClicked = true;
+          showContinueButton();
+        });
+  
+        function play(audioBuffer) {
+          var source = context.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(context.destination);
+          source.start();
+        }
+  
+        function showContinueButton() {
+          var continueButton = document.getElementById("continueButton");
+          if (lowFrequencyClicked && highFrequencyClicked) {
+            continueButton.style.display = "block";
+          }
+        }
       }
-    }
+    })();
   </script>
+  
 </body>
 </html>

@@ -1,6 +1,6 @@
 const numerosEnPalabras = {
   21: "veintiuno",
-  22: "veintid\u00F3s",
+  22: "veintidós",
   23: "veintitres",
   24: "veinticuatro",
   25: "veinticinco",
@@ -303,7 +303,8 @@ function check_answer(data){
 
 
 // Function to create a random trial
-function create_random_tone_number_task(training = false, is_word = false, delay) {
+function create_random_tone_number_task(training = false, is_word = false, block, round, delay) {
+  console.log("block: " + block + " round: " + round);
   if (delay == null) delay = jsPsych.randomization.randomInt(0, 1025);
   font_size = digit_font_size;
   let number = null;
@@ -337,7 +338,9 @@ function create_random_tone_number_task(training = false, is_word = false, delay
       number: number,
       audioFile: audioFile,
       trial_duration: delay + number_time_on_screen,
-      font_size: font_size
+      font_size: font_size,
+      block: block,
+      round: round
     },
     on_finish:function(data){
       if (!training) return;
@@ -357,7 +360,9 @@ function create_tone_number_task_remaining_before_delay(training = false) {
     choices: "NO_KEYS", // important: this is to avoid the participant to press a key before the number is shown
     trial_duration: function () {return getLastBlockData().delay - getLastBlockData().rt;},  
     data: {
-      task: 'delay_block'
+      task: 'delay_block',
+      block: function () {return getLastBlockData().block},
+      round: function () {return getLastBlockData().round},
     }
   };
 
@@ -375,6 +380,8 @@ function create_tone_number_task_remaining_before_delay(training = false) {
       trial_duration: function () {return getDataTwoBlocksBefore().delay - getDataTwoBlocksBefore().rt + number_time_on_screen;},
       audioFile: '',
       font_size: function () {return getDataTwoBlocksBefore().font_size},
+      block: function () {return getDataTwoBlocksBefore().block},
+      round: function () {return getDataTwoBlocksBefore().round},
     },
     on_finish:function(data){
       if (!training) return;
@@ -397,6 +404,8 @@ function tone_number_task_remaining_after_delay(training = false) {
       number: function () {return getLastBlockData().number},
       task: 'tone_number_task_remaining_after_delay',
       font_size: function () {return getLastBlockData().font_size},
+      block: function () {return getLastBlockData().block},
+      round: function () {return getLastBlockData().round},
     },
     on_finish:function(data){
       if (!training) return;
@@ -423,6 +432,8 @@ function create_empty_block(training = false){
       task: 'empty_block',
       number: function () {return getLastBlockData().number},
       stimulus: function () {return getLastBlockData().stimulus},
+      block: function () {return getLastBlockData().block},
+      round: function () {return getLastBlockData().round},
     },
     // at end check if the answer was correct
     on_finish:function(data){
@@ -484,12 +495,12 @@ function if_remaining_block_was_shown_and_not_interrupted(training = false){
 
 function create_digit_block_with_instructions() {
   let timeline = [];
-  for (let i = 0; i < 2; i++) { // DIGIT BLOCK WITH INSTRUCTIONS (2)
-    timeline.push(showInstructionsMessage(i));
+  for (let b = 0; b < 2; b++) { // DIGIT BLOCK WITH INSTRUCTIONS (2)
+    timeline.push(showInstructionsMessage(b));
     //timeline.push(instructions_digit);
-    for (let i = 0; i < 40; i++) { // DIGIT BLOCK (40)
+    for (let j = 0; j < 40; j++) { // DIGIT BLOCK (40)
       timeline.push(fixation);
-      timeline.push(create_random_tone_number_task(training=false, is_word=false));
+      timeline.push(create_random_tone_number_task(training=false, is_word=false, block=b, round=j, delay=null));
       timeline.push(if_before_delay());
       timeline.push(if_after_delay()); 
       timeline.push(if_remaining_block_was_not_shown()); 
@@ -501,12 +512,13 @@ function create_digit_block_with_instructions() {
 
 function create_word_block_with_instructions() {
   let timeline = [];
-  for (let i = 0; i < 2; i++) { // WORD BLOCK WITH INSTRUCTIONS (2)
-    timeline.push(showInstructionsMessage(i+2));
+  for (let b = 2; b < 4; b++) { // WORD BLOCK WITH INSTRUCTIONS (2)
+    timeline.push(showInstructionsMessage(b));
     //timeline.push(instructions_word);
-    for (let i = 0; i < 40; i++) { // WORD BLOCK (40)
+    for (let j = 0; j < 40; j++) { // WORD BLOCK (40)
       timeline.push(fixation);
-      timeline.push(create_random_tone_number_task(training=false, is_word=true));
+      console.log("block: " + b + " round: " + j);
+      timeline.push(create_random_tone_number_task(training=false, is_word=true, block=b, round=j, delay=null));
       timeline.push(if_before_delay());
       timeline.push(if_after_delay()); 
       timeline.push(if_remaining_block_was_not_shown()); 
@@ -519,7 +531,7 @@ function create_word_block_with_instructions() {
 function create_training_block(words, delay) {
   return [
     fixation,
-    create_random_tone_number_task(training=true, words, delay), // HERE
+    create_random_tone_number_task(training=true, words, block=null, round=null, delay),
     if_before_delay(training=true), 
     if_after_delay(training=true),
     if_remaining_block_was_not_shown(training=true),

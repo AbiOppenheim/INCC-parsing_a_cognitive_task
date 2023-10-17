@@ -493,11 +493,28 @@ function if_remaining_block_was_shown_and_not_interrupted(training = false){
   return if_remaining_block_was_showned_and_NOT_interrupted;
 }
 
+var cursor_off = {
+  type: jsPsychCallFunction,
+  func: function() {
+      document.body.style.cursor= "none";
+  }
+}
+
+var cursor_on = {
+  type: jsPsychCallFunction,
+  func: function() {
+      document.body.style.cursor= "auto";
+  }
+}
+
+
 function create_digit_block_with_instructions() {
   let timeline = [];
   for (let b = 0; b < 2; b++) { // DIGIT BLOCK WITH INSTRUCTIONS (2)
     timeline.push(showInstructionsMessage(b));
     //timeline.push(instructions_digit);
+    // Hide the cursor
+    timeline.push(cursor_off);
     for (let j = 0; j < 40; j++) { // DIGIT BLOCK (40)
       timeline.push(fixation);
       timeline.push(create_random_tone_number_task(training=false, is_word=false, block=b, round=j, delay=null));
@@ -506,6 +523,8 @@ function create_digit_block_with_instructions() {
       timeline.push(if_remaining_block_was_not_shown()); 
       timeline.push(if_remaining_block_was_shown_and_not_interrupted());
     }
+    // Show the cursor
+    timeline.push(cursor_on);
   }
   return timeline;
 }
@@ -515,6 +534,8 @@ function create_word_block_with_instructions() {
   for (let b = 2; b < 4; b++) { // WORD BLOCK WITH INSTRUCTIONS (2)
     timeline.push(showInstructionsMessage(b));
     //timeline.push(instructions_word);
+    // Hide the cursor
+    timeline.push(cursor_off);
     for (let j = 0; j < 40; j++) { // WORD BLOCK (40)
       timeline.push(fixation);
       console.log("block: " + b + " round: " + j);
@@ -524,6 +545,8 @@ function create_word_block_with_instructions() {
       timeline.push(if_remaining_block_was_not_shown()); 
       timeline.push(if_remaining_block_was_shown_and_not_interrupted());
     }
+    // Show the cursor
+    timeline.push(cursor_on);
   }
   return timeline;
 }
@@ -611,10 +634,10 @@ var timeline = [];
 
 timeline.push(preload_files);
 
-timeline.push(intro_1, intro_2, intro_3, intro_4, loop_intro_5, loop_intro_6);
-timeline.push(survey_1, survey_2);
+timeline.push(intro_1);//, intro_2, intro_3, intro_4, loop_intro_5, loop_intro_6);
+// timeline.push(survey_1, survey_2);
 
-timeline = timeline.concat(create_training_loop());
+// timeline = timeline.concat(create_training_loop());
 
 var version = jsPsych.randomization.sampleWithoutReplacement([1,2],1)[0];
 if(version == 1){

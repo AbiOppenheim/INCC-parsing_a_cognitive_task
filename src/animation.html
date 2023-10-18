@@ -125,30 +125,54 @@
             }
         }
 
-        .move-number-logo {
-            animation-name: moveLogo;
-            animation-duration: 0.2s; /* Duration of the animation */
-            animation-fill-mode: both;
-        }
-
         @keyframes moveLogo {
             0% {
                 transform: translate(-50%, -100%);
             }
             100% {
-                transform: translate(-150%, -100%);
+                transform: translate(-190%, -100%);
             }
         }
 
         .icon {
             position: absolute;
             top: 80%;
-            left: 60%;
+            left: 50%;
             transform: translate(-50%,-50%);
-            width: 80px;
-            height: 60px;
             cursor: pointer;
         }
+        #continueButton {
+        /* Add the CSS styles for the buttons here */
+        background-color: #8A00AD;
+        color: #fff;
+        border-radius: 8px;
+        border-style: none;
+        box-sizing: border-box;
+        cursor: pointer;
+        display: none;
+        font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        width: 400px; /* Set a fixed width */
+        padding: 13px 20px;
+        text-align: center;
+        transform: translate3d(0, 0, 0);
+        transition: all 0.3s;
+        }
+
+        #continueButton:hover {
+        background-color: #770394;
+        opacity: 1;
+        transform: translateY(0);
+        transition-duration: 0.35s;
+        box-shadow: rgba(39, 174, 96, 0.2) 0 6px 12px;
+        }
+
+        #continueButton:active {
+        transform: translateY(2px);
+        transition-duration: 0.35s;
+        }
+
 
     </style>
 </head>
@@ -163,14 +187,12 @@
         <span style="display: block; text-align: center; margin-top: 5px;">Tiempo</span>
     </div>
     <div class="tick-container"></div>
-    <!-- <div class="text"></div> lower -->
     <div class="text" style="top: 65%; left: 50%; transform: translate(-50%, -50%);"></div>
     <!-- <button id="continueButton">Continue</button> hidden -->
     
     <div class="icon">
         <div class="arrow"></div>
-        <button id="continueButton" style="display: none; text-align: center; margin-top: 90px;">Continuar</button>
-
+        <button id="continueButton">Continuar</button>
     </div>
 
     <!-- below the line write 'time' -->
@@ -198,6 +220,7 @@
         const tickContainer = document.querySelector('.tick-container');
         const textElement = document.querySelector('.text');
         const continueButton = document.getElementById('continueButton');
+        const backButton = document.getElementById('backButton');
         const blackLogos = document.querySelectorAll('.black-logo');
         const violetLogos = document.querySelectorAll('.violet-logo');
 
@@ -281,9 +304,28 @@
                 // 2 seconds after hiding "AkeyBlackLogo," move "numberBlackLogo" to its position
                 setTimeout(() => {
                     const numberBlackLogo = document.getElementById("numberBlackLogo");
-                    numberBlackLogo.style.animation = 'moveLogo 2s linear'; // Apply the animation
+                    numberBlackLogo.style.animation = 'moveLogo 2s linear forwards'; // Apply the animation
                 }, 1000);
+                
+                // hide the previous violet logo and make it black
+                setTimeout(() =>{
+                    const prevVioletLogo = document.getElementById(`KkeyVioletLogo`);
+                    prevVioletLogo.style.display = 'none';
+    
+                    const prevBlackLogo = document.getElementById(`KkeyBlackLogo`);
+                    prevBlackLogo.style.display = 'block';
+                    prevBlackLogo.style.left = 80 + '%';
+                    prevBlackLogo.style.position = 'absolute';
+                }, 2000)
 
+                // show de AKey where the numberBlackLogo was before moving
+                setTimeout(() => {
+                    const violetLogo = document.getElementById(`AkeyVioletLogo`);
+                    violetLogo.style.left = 60 + '%';
+                    violetLogo.style.display = 'block';
+                    violetLogo.style.position = 'absolute';
+                    violetLogo.classList.add('violet-jump');
+                }, 3000);
             }
             currentStage++;
             

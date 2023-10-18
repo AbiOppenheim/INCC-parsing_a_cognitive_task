@@ -507,6 +507,29 @@ var cursor_on = {
   }
 }
 
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+function create_random_delay_array(){
+  var delays = new Array(40).fill(0,0,10).fill(102.5, 10, 20).fill(992.5,20,30).fill(1025, 30, 40);
+  delays = shuffle(delays);
+  return delays;
+};
 
 function create_digit_block_with_instructions() {
   let timeline = [];
@@ -515,9 +538,10 @@ function create_digit_block_with_instructions() {
     //timeline.push(instructions_digit);
     // Hide the cursor
     timeline.push(cursor_off);
+    var delays = create_random_delay_array();
     for (let j = 0; j < 40; j++) { // DIGIT BLOCK (40)
       timeline.push(fixation);
-      timeline.push(create_random_tone_number_task(training=false, is_word=false, block=b, round=j, delay=null));
+      timeline.push(create_random_tone_number_task(training=false, is_word=false, block=b, round=j, delay=delays[j]));
       timeline.push(if_before_delay());
       timeline.push(if_after_delay()); 
       timeline.push(if_remaining_block_was_not_shown()); 
@@ -539,7 +563,7 @@ function create_word_block_with_instructions() {
     for (let j = 0; j < 40; j++) { // WORD BLOCK (40)
       timeline.push(fixation);
       console.log("block: " + b + " round: " + j);
-      timeline.push(create_random_tone_number_task(training=false, is_word=true, block=b, round=j, delay=null));
+      timeline.push(create_random_tone_number_task(training=false, is_word=true, block=b, round=j, delay=delays[j]));
       timeline.push(if_before_delay());
       timeline.push(if_after_delay()); 
       timeline.push(if_remaining_block_was_not_shown()); 

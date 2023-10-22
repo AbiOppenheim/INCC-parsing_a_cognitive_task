@@ -1,0 +1,41 @@
+block,round,task,trial_duration,delay,audioFile,number,stimulus,type,response_1,rt_1,response_2,rt_2
+0.0,13.0,tone_number_task,933.0,783.0,tones/440hz_short.mp3,43,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,s,1671.0,j,890.0
+0.0,19.0,tone_number_task,708.0,558.0,tones/880hz_short.mp3,25,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,1430.0,j,873.0
+0.0,23.0,tone_number_task,1171.0,1021.0,tones/880hz_short.mp3,32,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,2012.0,j,1001.0
+0.0,25.0,tone_number_task,682.0,532.0,tones/440hz_short.mp3,43,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,s,1836.0,j,1337.0
+0.0,29.0,tone_number_task,300.0,150.0,tones/440hz_short.mp3,39,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,s,1005.0,j,856.0
+0.0,33.0,tone_number_task,169.0,19.0,tones/880hz_short.mp3,68,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,857.0,k,839.0
+0.0,36.0,tone_number_task,1102.0,952.0,tones/440hz_short.mp3,62,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1734.0,k,784.0
+0.0,39.0,tone_number_task,157.0,7.0,tones/440hz_short.mp3,64,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,700.0,k,710.0
+1.0,2.0,tone_number_task,150.0,0.0,tones/880hz_short.mp3,34,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,1149.0,j,1149.0
+1.0,3.0,tone_number_task,754.0,604.0,tones/880hz_short.mp3,68,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,1256.0,k,652.0
+1.0,4.0,tone_number_task,424.0,274.0,tones/440hz_short.mp3,67,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1103.0,k,830.0
+1.0,6.0,tone_number_task,462.0,312.0,tones/440hz_short.mp3,69,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,765.0,k,461.0
+1.0,7.0,tone_number_task,526.0,376.0,tones/880hz_short.mp3,62,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,964.0,j,589.0
+1.0,8.0,tone_number_task,419.0,269.0,tones/440hz_short.mp3,68,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,931.0,k,668.0
+1.0,15.0,tone_number_task,747.0,597.0,tones/880hz_short.mp3,55,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,1129.0,k,532.0
+1.0,16.0,tone_number_task,621.0,471.0,tones/880hz_short.mp3,49,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,1451.0,k,980.0
+1.0,18.0,tone_number_task,887.0,737.0,tones/440hz_short.mp3,56,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1405.0,k,668.0
+1.0,19.0,tone_number_task,1131.0,981.0,tones/440hz_short.mp3,54,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1703.0,k,722.0
+1.0,20.0,tone_number_task,948.0,798.0,tones/440hz_short.mp3,46,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1768.0,k,978.0
+1.0,25.0,tone_number_task,770.0,620.0,tones/440hz_short.mp3,32,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,s,1190.0,j,570.0
+1.0,33.0,tone_number_task,1103.0,953.0,tones/880hz_short.mp3,35,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,1467.0,j,514.0
+1.0,35.0,tone_number_task,601.0,451.0,tones/440hz_short.mp3,47,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1229.0,k,786.0
+1.0,37.0,tone_number_task,1087.0,937.0,tones/440hz_short.mp3,44,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,s,1979.0,j,1057.0
+2.0,2.0,tone_number_task,606.0,456.0,tones/440hz_short.mp3,cuarenta,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1129.0,j,1655.0
+2.0,3.0,tone_number_task,1169.0,1019.0,tones/440hz_short.mp3,veinticinco,tones/440hz_short.mp3,tone_number_task+delay_block+tone_number_task_remaining_before_delay+empty_block,s,621.0,j,1000.0
+2.0,5.0,tone_number_task,603.0,453.0,tones/880hz_short.mp3,sesenta y nueve,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,846.0,k,1399.0
+2.0,6.0,tone_number_task,577.0,427.0,tones/880hz_short.mp3,veinticuatro,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,588.0,j,943.0
+2.0,7.0,tone_number_task,447.0,297.0,tones/440hz_short.mp3,cincuenta y cuatro,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1434.0,k,1327.0
+2.0,17.0,tone_number_task,180.0,30.0,tones/880hz_short.mp3,cincuenta y dos,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,702.0,k,677.0
+2.0,21.0,tone_number_task,1107.0,957.0,tones/880hz_short.mp3,sesenta,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,1900.0,k,949.0
+2.0,30.0,tone_number_task,982.0,832.0,tones/880hz_short.mp3,treinta y ocho,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,2093.0,j,1274.0
+2.0,32.0,tone_number_task,567.0,417.0,tones/440hz_short.mp3,cincuenta y cinco,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1391.0,k,1026.0
+2.0,36.0,tone_number_task,612.0,462.0,tones/440hz_short.mp3,cincuenta y nueve,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,s,1595.0,j,1138.0
+3.0,2.0,tone_number_task,372.0,222.0,tones/880hz_short.mp3,veintitres,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,s,1371.0,j,1170.0
+3.0,3.0,tone_number_task,800.0,650.0,tones/440hz_short.mp3,treinta,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1671.0,k,1033.0
+3.0,15.0,tone_number_task,421.0,271.0,tones/440hz_short.mp3,veintisiete,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,s,1498.0,j,1255.0
+3.0,24.0,tone_number_task,311.0,161.0,tones/440hz_short.mp3,cincuenta,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,868.0,k,711.0
+3.0,28.0,tone_number_task,315.0,165.0,tones/440hz_short.mp3,cuarenta y seis,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1392.0,k,1231.0
+3.0,31.0,tone_number_task,1148.0,998.0,tones/880hz_short.mp3,treinta y tres,tones/880hz_short.mp3,tone_number_task+empty_block+empty_block,a,2064.0,k,1077.0
+3.0,34.0,tone_number_task,173.0,23.0,tones/440hz_short.mp3,veintisiete,tones/440hz_short.mp3,tone_number_task+empty_block+empty_block,a,1169.0,k,1149.0

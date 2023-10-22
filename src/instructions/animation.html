@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to animate a straight line in linear motion?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgb(255, 255, 255);
+            font-family: 'Source Serif Pro', serif;
+            font-size: 22px;
+        }
+
+        .line-container {
+            width: 700px;
+            height: 2px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden; /* Hide the overflowing part */
+        }
+
+        .black-line {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            position: absolute;
+        }
+
+        .arrow-container {
+            position: absolute;
+            /* position it on the right end of line-container */
+            top: calc(50% - 7.5px);
+            left: calc(50% + 350px - 20px);
+        }
+
+        .arrow-right {
+            display: block;
+            width: 15px;
+            height: 15px;
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            transform: rotate(135deg); /* Rotate the arrow to point right */
+        }
+
+        .red-line {
+            width: 0;
+            height: 100%;
+            background: #8A00AD;
+            transition: width 0.5s ease;
+            position: absolute;
+        }
+
+        .text {
+            text-align: center;
+            font-size: 24px;
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .tick-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            height: 100%;
+        }
+
+        .tick {
+            width: 2px;
+            height: 30px;
+            background: #000;
+            position: absolute;
+            transform: translate(-50%, -15px);
+
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            display: flex;
+            justify-content: space-between; /* Distribute logos evenly */
+        }
+
+        .logo {
+            width: 100px; /* Adjust the size as needed */
+            height: 100px; /* Adjust the size as needed */
+            display: none;
+            position: absolute;
+            transform: translate(-50%, -100%);
+        }
+
+        /* Add these styles for the jumping animation */
+
+        Initially hide the violet logos
+        .violet-logo.violet-hidden {
+            display: none;
+        }
+
+        /* Add animation for the jumping effect */
+        .violet-logo.violet-jump {
+            animation-name: jump;
+            animation-duration: 1s; 
+            animation-fill-mode: both;
+        }
+
+        @keyframes jump {
+            0% {
+                transform: translate(-50%, -100%);
+            }
+            50% {
+                transform: translate(-50%, -120px);
+            }
+            100% {
+                transform: translate(-50%, -100%);
+            }
+        }
+
+        @keyframes moveLogo {
+            0% {
+                transform: translate(-50%, -100%);
+            }
+            100% {
+                transform: translate(-190%, -100%);
+            }
+        }
+
+        .icon {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            cursor: pointer;
+        }
+        #continueButton, #finishButton {
+        /* Add the CSS styles for the buttons here */
+        background-color: #8A00AD;
+        color: #fff;
+        border-radius: 8px;
+        border-style: none;
+        box-sizing: border-box;
+        cursor: pointer;
+        display: none;
+        font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        width: 400px; /* Set a fixed width */
+        padding: 13px 20px;
+        text-align: center;
+        transform: translate3d(0, 0, 0);
+        transition: all 0.3s;
+        }
+
+        #continueButton:hover {
+        background-color: #770394;
+        opacity: 1;
+        transform: translateY(0);
+        transition-duration: 0.35s;
+        box-shadow: rgba(39, 174, 96, 0.2) 0 6px 12px;
+        }
+
+        #continueButton:active {
+        transform: translateY(2px);
+        transition-duration: 0.35s;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="line-container">
+        <div class="black-line"></div>
+        <div class="red-line"></div>
+    </div>
+    <div class="arrow-container">
+        <div class="arrow-right"></div>
+        <span style="display: block; text-align: center; margin-top: 5px;">Tiempo</span>
+    </div>
+    <div class="tick-container"></div>
+    <!-- <div class="text" style="top: 65%; left: 50%; transform: translate(-50%, -50%);"></div>  occupying more horizontall space-->
+    <div class="text" style="top: 65%; left: 50%; transform: translate(-50%, -50%); width: 1000px;"></div>
+
+    
+    <div class="icon">
+        <div class="arrow"></div>
+        <button id="continueButton">Continuar</button>
+        <!-- <button id="finishButton">Terminar</button> hidden-->
+        <button id="finishButton" style="display: none;">Terminar</button>
+    </div>
+
+    <!-- below the line write 'time' -->
+
+    <div class="logo-container">
+        <img id="xBlackLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACYklEQVR4nO3cy4rUQBTG8T9e2tGFLnQ51SD6APpiioiDCLry8mQuZMTRgZlBMRh9CS9MT0mgIuIlk04qJyed7we1nTn1cbpSSVcaREREREREREREREREWjoHnJ1AWgvgDBNzGXgEHAE/gBWwDzwALuJHVcsOcJBq/A68Bx4CV3DuBvARiP8Z74AwdpGphv2GOj8AN3HqEvCpofiYRgEsR6xzmWpoU6enT+Avj1sUH0cOu23I9XiCQ2/XmEAESuC68XLRtKz9a+zhcHexWnMS0bCz1+3keqw87ka+dZhINOjsLp1cj6849KbjZOKAnd21k+vxGofu9phQHCDsviFX4w4OnQde9pxYmWkZ6bNc1ONVumN0aTtDFxU9OztHJxdpLq7l6KayY2eP+b9HMcaEw9xCHmPiYa4hWwYQ5h6yRRBBIQ8fSFDIw3d2UMg2e9wiw98Y85m4iZChG2d/4fMedrkJuwvvYZdzDNk67FmHbBW2QjYIWyEbhK2QDcJWyKdQ0AaClo7phRy1hPxN2zsDQTcsmxNynPMyEvRQaXNDjnPq7KUe/A8v6KusaYVc0/eGfwg6bjA8HaAxoCNhBnTI0YCO7RrQQXQDW8Cuk7u2kGGns5feBnZnx0nIOcO+j0NHG/j62yHOXACOnXRyzs4+9vZmVvUrACcOQ+4b9km69rjyxclykXMZ+YxDLxx2ct/OfopD11p2dTGRH0ap5nIVp26fEvaukzdSt9ML9U1Lxi2cqzr7eSq2vnIfAPecXVi20j758LcdU1XzM8+d3DSZBf4tnDWBiIiIiIiIiIiIiIjg2E+zQuEOCSyHmgAAAABJRU5ErkJggg==" class="logo black-logo">
+        <img id="xVioletLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC10lEQVR4nO2cPW8TQRCGX/ENBRRQBiQEPwD+GAghEEKCa8B4J0uRMhUF3bGTSCloqShQECFIAYGIIPwJPkQ4tLJBliCO7bvbm/O9j7StPfN4PDdn7x5ACCGEEEIIIYQQQgghhBAyCRmeHcqRH7RuK0N+JEN2AG1iCY9POuhtB33noD8EuisIbxzCjYfIj8MIMRZBuOmgW4MY9btDeC8It/rIT8EygpULDuGjQIv/LQfd9Fg923ScMYb44e8Vp0A/9JBfhEUyrJ0QhE9jgi+Ga7uP/FxTccb3jjFMEqelb+BfBHpnguCLJmVPIXn4DQx3YQ1BeD2F6MJBPy8iP5+yXYxra3uI3oC16WJ4QZk4CUlY2dNW8sjaNTeNOIRvMyRS1F3Zs1TyyPoKazjoqxmTKeqq7BKV/Kd1vIQ1HMLVEqKLqmWXlRzXIvQKrLGM5cMCfV4mMVdRGynZLoYrvIh3jLBIH7pQtoqkZGVXUcmDGHQBlqmimtyMld3kezdCEwn7rkluInHfVckpBfiuS04hwlNy/UI8Jddf2Z6S08y40vCs3gp8JXdtHb/wWZftuiS5KdmdlJxadqclp5JNyQlkU3IC2ZScQDYl7wNFJ8CzdbRPsrCF/AvHuwR43rDMj2Tpchvx/FFpfiVLlyq7zx/+68fzr6x2SUaNr9lquN0gAdxAkwBuCUsANzkmgNt2E8CN6AnI8OiYQNctjFu+ktEvbMTTwLBGPMBuQXLFsq/DGvFpBvN2/E0Q3sISS3h61EF/WqjkKis75mTqZFZ8CoBD+GVNclnZMad47YElHMIXC+2i4jayA2s46ANrlVy2sh30HqzhsXZmwqrebsODUWIuPaychkU8nlzeR/a6hROpMYZ4oH5cyxCsXoJlYmULtDcIdnDldtAtB71m6cISY4lzchzhRiamHUG4b7aSxyVjajwa+zg2O0VACCGEEEIIIYQQQgghhBDY5jeZP+lj2AeGzwAAAABJRU5ErkJggg==" class="logo violet-logo">
+
+        <img id="soundBlackLogo" src="data:image/png;base64,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" class="logo black-logo">
+        <img id="soundVioletLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAIEUlEQVR4nO1dWYwURRj+8ESDicbEeBuVROOBijEaL4IiajTxAmPiHR+ESIIaOYSH8Ymdqt4VQR8EoqCJoj1Vs4sQJSj6Ih4gxng8mBiIKBARFFZgwciu+Xd6k5mamj5muqanu+tL5mnq7K+r/r/+/6+/AQsLCwsLi5zDgXsJg1jJIXZzyAEOsdmBeGoIQ6OSHlvuwFGazCD3c8gh9ccg3rKktJUMcQOHOKAjY+RXhHyynWPKLThK4xjE335keL9NSY8181gAdyyD3KlsT4Mc8lkiSiFkIOnxZhoMfWcyyC31K0HMHSmj/pfsiDOMheg9mUN8pxHei6rLWULagAI+OJFBfh5Gk7KEGCfDPY5DrtUI7N4CPjtGLW8JMQgX7tEcwtWsjPWL8OHxujqWEEMYwtAoDrFMI8C/LsAd06ieJcQQGISj2aZ+XIDyqX71LCEGwCHma8j4tRu95wTXtWpvrGAoT9PIjD8Y3IvC1LeExIgiyvczyP+Uh7q3G6WrwrZhCYmNDHkbgzikCPADDKWborRjCTFnuT3MIe+I3pZ5GdJI5c4Eiui9nEP8pTzIIw7kQ820Z5qQHrhncYjtDGJm5vwtHOULG1hun26+TXOEEAEM4qOq9tcSQcgCvDdta71TSbzYSrsmCeEQ0zUa4J8M5QlIM+hwxyB/0kzOabVtk4QwiEcZxD7NuA85KD2ItFpuOeQGUz5wbliGvAx5BodYrRn/IIeYjTSBtBMO+YnGPiXJkBhHH+3QsjxZMouUj3pi5Bxk1XLbDNp5DvEOsgfrV0rpEaTAcvum5m36ys9y2wzafTCkg6uqtldkirgZnQoG2dOM5bYZJHFSL6J8YyVIr+Zl2+NAnIc0WG4pUIECFsz0J2MhpAtrTonWb3mqKlMY5McddXjU6+1yJ4XymOtTtkwIyTQG8QOHWBXl4MchX9AoLNPRqg+7CDGD9vdGYZrN/irBbaVxMAgeAyEMklW1sZeEd3hZWef//8eBe34rcU/fxklC1ZtygIyIMAzeIiFFlK7XuACOhFVni5Bn10dVCreplWGOjOFfZMttQoRcqgs58rbbnpBjeEwl1IG8LOJAxAyDZLQtgpDH0C9tPd62/a+GlDkht65NSr33Iw2CZIayzFa3YslMMyEjIKMhGQ8VOThYhJyCADiQd6mrhFYfwoKET3UDrZqVs0AIgaP3SlUm0BkjjNrOIDb6hb22eSLZIIRAyojqXia/CAJA2plSZ0dom50lxB8c4nn1GRUhbg+hKO2pruNA3hKyw/ytkALcMUuw5NgIFt71yhu/MegkziHfUGTzstgnkkR7JvplkO94Xsv7wrRN4Uiei7n6AU/yH4+YpJT/LfaJJNFe3P1yiAeUt31hGLuT6kIgx5pfeVqBqomewz09tolkgRAH8jQOuUstS6QEtU8yQHnj+8kL6leHQXxR20/57lgmkhVCuiAuYBCv6w5+QdtXAYWjGMS22jqlyX51GMTiWkLkS7FMJCuEjKAbvVeTKqq88VtJO4IPOOQSpc78KKYUBtHnVz63hIwIai9KsqpeeSp8QJkiojzgilexpvw3CEJeCSFwyFeVB7YSPmCQ45UV8r1feTIsKuW3hxlUbglxULpWIeSXIBO7IhN+9ytPZhal/X1GJtLO9kz268WKVT/gg/7ll4+OkqBALU/KhJGJtLM9s4S4Y5QHtj8KgeR8i1LeEhKAIuR1dsvqoBXCIF5T6r1rUqgHyZymJ9LO9kz16z3ctqq9obIU5ZEQB/Ka+vspckuQBZhBLFVWiD0YtkJI5aKQWKr3mYt7g0wnZLGNYjqpP+fIrlgmknXjIofsDmqfoXSrsjr6e+Ce4D8m8aVCyMOxTCQrhOjM70RGSPN7Sam3wq88bX9q3G+oyM28ETLioKokRCvfgxAgBUB1UNGKCbrurWyJO8L0lUtCCi26cCkRTrALt/YaBsmu2CeSRHtJ96sPpPYX5mQyqQ8hEhMTmUiWCGGVc8Th6GFAckoLYUCiv7oyWTRbmURWCOmu+Ev2KlvV7qBAOV04KYd8pelQUgaxphVSskAIg5jopTCvfi6DYa4nkN9cGcsRSoseZSLP1O+R8f3QJvAY+vX85jMbHBxnBdVvsDreayLZpNhskJTUXEfgmnv0YQ+OXhuPtxRoXX0pnvy9ZghJ94UdHjIpAGW9i+XCTu3Jcvhu4AY1Ir7VHw20C/IKpOxKGw8Z2ehd/16nkNHf9JW2uJH2S58Moi/KbWFaRfXzLU9DGq5Fm0prxBO6Fk3JZ+pTbYh1HXUtOi+JA1jl4FhjQCR1uQj3XHQisp1aozxB8y2TAcrugLQmnylg+eg0EuKZ8AdSl3wmi+mZOMTc+rsiw3OZnYlPT3DIt9OQwIwSyuheKiInzCk+VSn+eMiTcKel+KvIjOCr0qlMgskg56UtCWZH58aKAi/6Y4dmkjPTkibWVJqpRBMpM+XqcKcnUqbIw0wmUg5KNe6gfGcnalmZTjVefX2Y1WVLkAdtMv4O/FwFgxzfyaaT3H3QhUPush90SZQUOU+jeW0LY6yzK8QQOCTXkPIzxeVaQjros3kMYiND30mN6tkVkoCFmEN+2shCbAkxjMJwzqma0/GIVXWV/fRqCizE3Kq9iX++e7ElpPM+cD9/pIxdIW3GArhj1YuanpnlOYr5Uv0U7R5fLsFRGqcJLBjSqchJjzU34HoLsbqVPZH0OHMFjtJkny84rMisv6KT0Q1xMaXC8K45U0jOJloZlgwLCwsLC+QE/wNsCCgUDn5QxAAAAABJRU5ErkJggg==" class="logo violet-logo">
+
+        <img id="AkeyBlackLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFK0lEQVR4nO2dS2geVRTHf7EYFa1oG6srFbuQVtGFG7WiRTcupK1RU/ERKAEXQkG6clVQ3Fnc+IhpKW03omuL+xh1p8WdWnFhautCrdA8aNrkysHzwfUy35cvzuPeO3P+cCD5ZubOOf//zJ2Z+zgXDAaDwWAwGAwGg6EduBnYD0wDXwO/A0uAy9SWNAaJ5SNgAthMBrgfOJU5+W5IWwROAveRIG4DTgBrCRDlGrZV4DgwRiJ4CriQADEusp0HdscW41VgJQEyXCJ2FZiKJcaBjlZRbh0TTiZjVFNXEgjeJWpSazzR5APcnhmsK8pvwNYmBDmRwBXoMrGZusXYoa95sQN1mdhq3d8ppxII0mVmUqPU1hyymECALjNbqKuZZX8CwblM7bk6BJlOIDCXqX1YhyDfJBCYy9Tm6hDEvj0o1c5VOZYTuNJcpiYvQ5UjdlAuczNBiC+CCUJ84jstyAVgO3CP2nZ9gMb2q7OCHCnw80gCfnVWkAf7DLSI7VcnBTkzwNczCfjXOUEODfD1UAL+dUqQK8Adnm8PA494/9+eYBdzqwU5Hfh2TM3H6QT87IwgE55fo8AfwF/Add7vEwn42QlB/gZu8Pza622Tv3u4HriYgL+tF2Qm8OtTb5v87WMmAX9bL8guz6cbtYu0t21Zu5p72JWAv60W5BdgJBjKGu4jv/n4MQG/WyvI4cCnLwr2kd98HE7A71YKsqYNiD2M9RnoLd8f27z97kpkDHLrBJkN/Hl9wL6yzcdsAv63TpCpwJ+5DQwqmErA/1YJsgzc4vly5zrVkGy7O7FBfq0S5JPAlzeHOEb28SFlmCAVkfB0QO73Qxwj+/iQMkyQCkg4D2wK2q5eG9Jk3x426ZwNq7JKkvAu1UHKMkFKkvBAhYLIXA0TpAQJ3wWEbgEe2qDJMT6+jSRK5YgRxBuBD+/9jzLkGB9SpglSQTftNcC5Cl4KtkWaW5/9HfJ5cP4nS5Qlx/qQsk2QDZLwQkDisRIkhv3tUrYJUqKbdhT4swSJF4P+9l4/vFVZQ5LwcXBF76uAPL+/HT2HCTIkCY8G5H1WAXlhf7ucwwQZgoSzQTft5opaasP+dsEPDYpSOZpy/ANveoHYwQrLPhiU/b4J0l2rHLEDcpmbCUJ8EUwQ4hNvghCfbBOE+ASbIMQn1QQhPpEmCPHJM0ESIMyZIPFJciZIfGKcCRKfDNeFphNLwk9f8ldiCPKSJVWm38j7AzEEQefzXU6gOnCJmHDx8gC+ahWk16snqwDMJ0CGi2y/Ao8rJyNNCBKuK+UP0bxV54RfTYAYF2FA33QwoWhLE0kwwzSxRUnmd+oYKH/ueFttATiqCxSsl7NLpkFUjq+CkzwzYN+bgGe1f3xWh3PmLNKCxjCr/fD7NMZ+2NNEIuXpJtJntwQhV3JhVo4wu858MFzH8C9GCmZqjVMD5Ba9tM74WwO8WFDdDareSuFkcLKfgGtNhf+MGf454EgWnawNOwuWPHqrzhNmhncCbuQz4N66T3q8oKlAbtOuY7wgmYE83GvHWEH26KWOP08mCj6c5/WDuRHsLsj6KVfH2x17poxqNbVW0Nr7WNPOTPbJN3JWr5g2vxKP6Jpc4QO8d2G+EsuxyQH9Iue0Dt2jTQmNrHpZE7ZqDHs1pn4ZIVZiioHX2hszZYVLxOZjVFODrqCjHV0FdFXvmsYe4BvBDl3ZMueGRDekXdJPgNq/M6qANBU8rw2Qc9p0HzuBmCthixrDl9pQOK4pag0Gg8FgMBgM5IB/AD2WAMUtkV2/AAAAAElFTkSuQmCC" class="logo black-logo">
+        <img id="AkeyVioletLogo" src="data:image/png;base64,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" class="logo violet-logo">
+
+        <img id="numberBlackLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD5klEQVR4nO2cvWsUQRjGn1OwyaFgK4Ke3yBoYsAigtH/wI8oMSls7aMRLUxS2fgXWFlYSPwsxCquhUkQxE78QLGwkkRPTUASDSujE1le5y63s7OTm93nB9Pkcu8z9zy5ndnN7gsQQgghhBBCCCGEEEIIIYQQQogNFQAHAIwBiAC8BjAPIC7ZmAfwSnswCqBrNYI4BeBNG5gRt+lQ3vRpr3JlG4BnbfCB40DGNIBaXmEcAvCpDT5kHNj4DOCo6zCOAFg0iC0AuAWgH8AuAB0oHx36s/drLxYa+NTr8jA1axC5k+fXMWCUX3cNfs0A2Jq1eMWwZiwBOO9m7oXmgvYq6d1U1oX+tCHpIXdzLjzDBv9O2BarGLa26jBF0nFPeKjOWazoNixM6vhI0lEzLPSdsGBMFFE7CGLHuPByxKZIJIqobR2xY0B4OWFT5K0ossNyMgR/zlOSXqrrfqmZE0WqdNaaqvBSeZsauV0j2cjsJwNxSyECqQB4mJhDFLBOIQIZEnOIAtYJPpAuwwlVFLBO0IF06EsMcc5G+dIJPpDrBv08jPKlE3QgxxqY5NooXzpBB7JJ/DPsHYDnORjlSyfoQNboazzLej8BHBTX1KKAdIIP5JLQu6x/7tooXzpBB9Ittp5PAazNwShfOkEHUhX/mfwKYEvidVdG+dIJPpAbQmdQvO7KKF86QQdyUmjcNvyOC6N86QQdyGYAXxL1PwLYmINRvnSCDkRtPZ8kai81ud0yymCUL53gAxkRta82+d0og1G+dIIOpAfAr0TdFwDW5WBUjyedoAPZAOBDouYPAHtXeE9kYZQvneADuSlqnmvhPZGFUb50gg7krKj3qMUbj6OURvnSCT6Q76LeNX0z8krjfeI9L/WjYsmxWjrBBxLnNFZLJy0MBAwk1V8IvyFtsMuyoZ7zYutLp+0OWbbUGQgDiXL4w+I3JCU8ZLWJUcswkBapM5C/cFF3C9eQlPCQVTLiopyHFIXMfsqrpnzo0571wstvNkVkW42dGSZUdna7aK/xWBQ5436epWHQReOAUVGErTXctda4YvvsXbKI6ii3PcOkykrN8AzjPptCFd0CIllIdUoj6Tx84GL9WKbPsF1jN7nWuWjwTz1KlynhaVFwSbevI819Gza0+Jt00cu3phs4yqRVpzSuKf+juibdN/g1I55HyURvgzaxi3oHMaD32mU8eawC2KO3tuNN2ukedi3MRsqwujFjNo9GysnD11SOd5DEBRuTLg9TjajoVqemlhQc+Le1Pe6jGb+kUz+DMaEnIbvQlWHM6c8+oc/A9/sOgRBCCCGEEEIIIYQQQgghhBCCgvAbfeMR/pbiBTgAAAAASUVORK5CYII=" class="logo black-logo">
+        <img id="numberVioletLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAExElEQVR4nO2dv4/cRBTHv4BEkxORaBESBEhAQgICEgVI/PgPQvihQApa+vBDUCxJkd0Z7xXUqRJEcfZ7XigQFSwFSYSE6NAdCERBhRJ+XiSUwGnR7O6BPefk1vZ49sZ+H2ma/fHe+PuVZ2bH9ltAEARBEARBEARBEARBEARBEARBEAShNBNMbhpi9KgCnVLgsQZvKPAVDZ50qSnwFQVen2twUoEPezciQvKiAn27bDH0Hm0zbdIXjFaNmqGR3qNBXy77gHUwjS72QQcaMWOA9EkF+nn5B8lBNQX+JQI/69QMBXpGga8VJLyqwGsKyTGF+FCEc/vQMSKc22eOfaYBrxlNinSKkDztcpi6XHA6cmOnY8AYvRQo3Xmm0KUI8d21gptJqWDO2FKg150dQUvRoDeMVpYpF2pN9Ar0UsHpd8Jpz1uMAr9ZMLIcrRTMOLlzaUvsvNctR4NH1iS/XimQQvKYPTGZ8dF5j1tOH3TAnuiHSB4pHcj8ArecXWukxx1AgxJLy3dLB5lvBWSCJMca6W0HUOBXrMn909JBNPg7K8h9jfS2AyjEh6zhf6N0EA3ezAbpIV5ppLcdoId4xTJks3QQe7nWSE87hK6rpxjillYYMpnuFPDHmdXJONQ8rTBEg09Yy8VxqHmCN0SBD9s/qJoQyleeoA2JplvavF5wbWEcYp7gDdGgMwWbms6F8pUnaEM0+EiRSK6F8pUnaENWEd+RvRimQN8r0FeuhfKVJ2hDeujdbPZ4/s9Jf0dIHs/uqbkQylee4A1R4LfzOemd+etOhfKVJ2hD5tdermYE+SJGfItroXzlCdoQs/FmXZn8vY/RXdvvuxLKV57gDVGgs/lcyfH8+26E8pUnaEMG4Oet5SbZn3EhlK88QRsyxOhODfo1M7n+tIr4dtdC+coTtCFm6alBn2fib13vdktVQyhfeYI3xFzkt5aegxt8dlxVKF95gjZEg55Q4H8yB/91D/GtroXSnvIEbcgA8X4N+jET968I/OCNvqMqCOUrT/CGKPAH1hDy2gLfGZcVyleeoA3RoFfzS0/6ZJEbj1VJoXzlaYMhf+aF4lVzM/JuTYN/yHznG/OoWLYtK08LDMnHc9WwpDx1j99/gF3iiSElEUO43WdIVRTotyYnW195xJCSiCF7RKhtxJAFUWLIDJlD3CJzSElkyNojQm0jhiyIEkP21hzSFlozh7QFB4bkd03loc/qvIf3b8vvQNMfpYPYZTWGSA/W6FOnGYLur11eQ4M/y59m9HIjve0AGslxF4UDTlquSmkNR6U1NKhX9dm7rCHXTiO+t2qnukq/oPhMH/xQ1UeFN6xTLW2k1y1lMisA91Ht+WOb2fXk/HJNqsktjga9VXBl9AhqOnzRCrhlytdVDtoBJtPib9MbJ3Il/jT4fO1avmYMNAUcC5weyZyyE1M1SYE+LBhZLmWfR6mFKXFaVCZ29holph6UWWt38cdjD/HKAOkDs6XtVIvrlNNNn3KaWAopc8U7Zeiy80LK1vB1oalbenT72nlnw9QuE/3RopIU0vi/pe0A6XONF+O3MdU1zTMYZitgblCuCl1H2ubs7yrMs+/U0xg97NUEQRAEQRAEQRAEQRAEQRAEQRAEQRDQHv4FZ4BbDWMq8T8AAAAASUVORK5CYII=" class="logo violet-logo">
+
+        <img id="KkeyBlackLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEzElEQVR4nO2dy4sdRRSHv1GThSaik7hTBBUl8QG68AGikbiUqJOYiI+BEMTHwv8goOJGcKXGIdGQZBlwJyi484kLXQiKYNSFE40IIUrmYR6TkoIT0hTVNxnT3efUrfODs7rV9/Y5X3fVrdPVp8DlcrlcLpfL5XK5xkNXAtuAGeBL4E9gAQiF2oL4EH15F9gKrKYA3QYcKDz44QJtHtgP3IpBXQPsA84YCFQY2JaAvcBajGgjcMRAYIKy/QFs0IbxLHDSQDCCETsN7NCCsb3SLiqcx2JMpjW6qVMGnA9GLfYaDw45gPuYwXmh/A6sGQLIPgNXYCjEdvcNY538zdN2NBRiS33PUw4YcDIUZrFH6S0dMm/AwVCYzfWVZtlmwLlQqG3uA8iMAcdCobarDyBfGXAsFGqf9wHE5x5cVJ6rcy0auNJCoRb/DHUubadC4eZA0IfgQNAP/FgD2Qzc0LAf/8d3HAMeSL7nHnlG7kCWGYT7koviu2Uef0IeFaQZh2/8DhkeyBKwJTl+JfCJd1k6QF5Ojr0U+EAJRrTOVRKQV5PjJoD3FWFUDWRP5tzfVIZRLZAPgcuSY3YagFElkK+BK5L2LxoAUSWQH4DJpO2UrJPSBlEdkMPA9Um7h4F/DUCoDsjfwB1Jm3vlsak2gOqALAD3J5/fDhw1EPzqgJyWMaKpG+VBkHbgqwTyXGY15S8Ggl4lkJ2Zc1shz621g14dkC0jzu9a4C8Dga8KSNpNrc783bU096gGyOWyLOlg5jMrqZJqgKwAPm60eSH5/BLgIwMAqgAyIW++NtvEGfldSburgV8NQBh7IG+0tPspM57cbSx9Ul2292DmnF8yAKJaIAF43vA7LVUCWQTuTI6Jz0i+dyA6QAJwSJb6NHUz8I/fITpAQst4EgvGeJelBCS0jCdvKULpXKUBWcyMJ3FS+YUD0QESWsaT65SSkNR+h4QR48lGhSSkA2H0ePKKA9F5HSHIePJQ8l03Ad/6HVKvdS5th0Lh5kDQh+BA0A+8A0E/2A4E/QA7EPSD6kDQD6QDQT94DsRAwIID0Q9ScCD6gQkORD8YoYbUiRfhpzX4JzWAPOVFlWkrxr9dA8jZ7SpOGOgOghGLsXh6RLx6BRIXPiO7AMwaCEZQtt+kLhcSm96BpPtKTSarzXcbflkm9GinpKbxVY14TA5RBDMtE5srMr8eeM/oe+KhY5uTQjdxg4Lc5mjp1hWdK13P9MiItquAx4F3gE/ldeWSIc2JD9GXt4HHxMc2bRqikPLMEOWzx0RprOKF2bnStbGzjYHddU4T0kU1Y5UWOehE8RY9nvzQE338UOF6MtPdjereLkr7M6+SxfWyrnNFNn9OYhQ3nexN6zNbHqX1DWvW60ls4jTglr5/dG8mVRBv09o1ldnXMQ7uvWttpurOQuXjydbMxHlWJsyDaENmY8l4dbxW2ZiyUrqpM5lsb1rLq3dNt2y9ekiumHH+Szwhe3KlA/jZC/MZrRObHvFc5LD0oZsklTDIrpc9aY348Kj4lM4zmneGGgwa2d62E6zJZjW6qVFX0J5KdwFdkrtmsAF8OVonO1uWnEgMF2jHZQrQ+zyjC62S6m+7JNN5pPBdQufFh88kUTiVqaLtcrlcLpfL5cKq/gOe/u7gFS5vXAAAAABJRU5ErkJggg==" class="logo black-logo">
+        <img id="KkeyVioletLogo" src="data:image/png;base64,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" class="logo violet-logo">
+    </div>
+
+    <script>
+        const blackLineElement = document.querySelector('.arrow-right');
+        const redLineElement = document.querySelector('.red-line');
+        const tickContainer = document.querySelector('.tick-container');
+        const textElement = document.querySelector('.text');
+        const continueButton = document.getElementById('continueButton');
+        const finishButton = document.getElementById('finishButton');
+        const backButton = document.getElementById('backButton');
+        const blackLogos = document.querySelectorAll('.black-logo');
+        const violetLogos = document.querySelectorAll('.violet-logo');
+
+        let currentLineWidth = 0;
+        let currentStage = 0;
+
+        const stageWidths = [0, 20, 40, 60, 80, 100];
+        const stageTexts = [
+        'Comenzarás viendo una cruz en el centro de la pantalla.',    
+        'Después, la cruz desaparecerá y escucharás un tono.',
+        'Debes responder rápidamente presionando la tecla "A" si el tono fue de baja frecuencia <br> o "S" si fue de alta frecuencia.',
+        'Después de un tiempo variable, aparecerá un número en la pantalla.',
+        'Debes responder rápidamente presionando la tecla "J" si el número es menor a 45 o "K" si es mayor.',
+        'Si no logras responder al tono antes de que aparezca el número, no te preocupes. <br> <strong>En cualquier caso, intenta contestar lo más rápido posible.</strong>',
+        'Es muy importante que siempre respondas primero la tarea del tono y luego la tarea del número.',
+        'Ahora si, comenzaremos con el entrenamiento. <br> <strong>¡Buena suerte!</strong>'];
+        const stageLogos = ['x', 'sound', 'Akey', 'number', 'Kkey']
+
+        const tick = document.createElement('div');
+                    tick.classList.add('tick');
+                    tick.style.left = currentLineWidth + '%';
+                    tickContainer.appendChild(tick);
+
+
+        setTimeout(() => {
+                    const violetLogo = document.getElementById(`${stageLogos[currentStage]}VioletLogo`);
+                    violetLogo.style.display = 'block';
+                    continueButton.style.display = 'block';
+                    violetLogo.style.left = currentLineWidth + '%';
+                    violetLogo.style.position = 'absolute';
+                    violetLogo.classList.add('violet-jump');
+                    textElement.innerHTML = stageTexts[currentStage];
+                    currentStage++;
+
+                }, 2000); // 2-second delay
+
+        continueButton.addEventListener('click', () => {
+            if (currentStage < stageWidths.length-1) {
+
+                currentLineWidth = stageWidths[currentStage];
+                redLineElement.style.width = currentLineWidth + '%';
+                textElement.innerHTML = stageTexts[currentStage];
+
+                // Hide the previous violet logo and make it black
+                if (currentStage > 0) {
+                    const prevVioletLogo = document.getElementById(`${stageLogos[currentStage - 1]}VioletLogo`);
+                    prevVioletLogo.style.display = 'none';
+
+                    const prevBlackLogo = document.getElementById(`${stageLogos[currentStage - 1]}BlackLogo`);
+                    prevBlackLogo.style.display = 'block';
+                    prevBlackLogo.style.left = stageWidths[currentStage-1] + '%';
+                    prevBlackLogo.style.position = 'absolute';
+                }
+
+                // Create and append a tick
+
+                const tick = document.createElement('div');
+                tick.classList.add('tick');
+                tick.style.left = currentLineWidth + '%';
+                tickContainer.appendChild(tick);
+
+
+                // Show the violet logo for the current stage
+
+                const violetLogo = document.getElementById(`${stageLogos[currentStage]}VioletLogo`);
+                violetLogo.style.display = 'block';
+                violetLogo.style.left = currentLineWidth + '%';
+                violetLogo.style.position = 'absolute';
+                // logo.classList.remove('violet-hidden');
+                violetLogo.classList.add('violet-jump');
+            }
+            console.log('llega');
+            console.log(currentStage);
+            // Add the following code to handle the specific behavior when currentStage is 5
+            if (currentStage == 5) {
+                console.log('aca')
+                
+                const akeyBlackLogo = document.getElementById("AkeyBlackLogo");
+                akeyBlackLogo.style.display = 'none';
+
+                textElement.innerHTML = stageTexts[currentStage];
+
+                // 2 seconds after hiding "AkeyBlackLogo," move "numberBlackLogo" to its position
+                setTimeout(() => {
+                    const numberBlackLogo = document.getElementById("numberBlackLogo");
+                    numberBlackLogo.style.animation = 'moveLogo 2s linear forwards'; // Apply the animation
+                }, 1000);
+                
+                // hide the previous violet logo and make it black
+                setTimeout(() =>{
+                    const prevVioletLogo = document.getElementById(`KkeyVioletLogo`);
+                    prevVioletLogo.style.display = 'none';
+    
+                    const prevBlackLogo = document.getElementById(`KkeyBlackLogo`);
+                    prevBlackLogo.style.display = 'block';
+                    prevBlackLogo.style.left = 80 + '%';
+                    prevBlackLogo.style.position = 'absolute';
+                }, 2000)
+
+                // show de AKey where the numberBlackLogo was before moving
+                setTimeout(() => {
+                    const violetLogo = document.getElementById(`AkeyVioletLogo`);
+                    violetLogo.style.left = 60 + '%';
+                    violetLogo.style.display = 'block';
+                    violetLogo.style.position = 'absolute';
+                    violetLogo.classList.add('violet-jump');
+                }, 3000);
+
+                // Hide Continue and Show finishButton
+
+            }
+            if (currentStage == 6) {
+                textElement.innerHTML = stageTexts[currentStage];
+            }
+            if (currentStage == 7) {
+                continueButton.style.display = 'none';
+                finishButton.style.display = 'block';
+                textElement.innerHTML = stageTexts[currentStage];
+            }
+            currentStage++;
+            
+        });
+
+        
+        
+    </script>
+</body>
+</html>

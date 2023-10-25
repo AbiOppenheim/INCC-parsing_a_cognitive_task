@@ -37,7 +37,7 @@ def process(file_path):
     df1 = df[df['type'] == 'tone_number_task+empty_block+empty_block']
     indices_to_drop = []
 
-    is_valid = lambda row, df, idx1, idx2 : row['task'] == 'tone_number_task' and  ((math.isnan(df.loc[idx1, 'response']) or df.loc[idx1, 'response'] in ['a', 's']) and (math.isnan(df.loc[idx2, 'response']) and df.loc[idx2, 'response'] in ['j', 'k']))
+    is_valid = lambda row, df, idx1, idx2 : row['task'] == 'tone_number_task' and  (df.loc[idx1, 'response'] not in ['j', 'k']) and (df.loc[idx2, 'response'] not in ['a', 's'])
 
     for index, row in df1.iterrows():
         if is_valid(row, df1, index + 1, index + 2):
@@ -129,15 +129,15 @@ def process(file_path):
     df = df.sort_values(by=['block', 'round'], ascending=[True, True])
 
     # save the file with ID 
-    df.to_csv(f"data/corpus/{ID}.csv", index=False)
+    df.to_csv(f"corpus/{ID}.csv", index=False)
     return True
 
 # set the path to the raw directory
-raw_dir = 'data/raw'
+raw_dir = 'raw'
 
 # set the path to the processed directory
-complete_dir = 'data/raw/processed/complete'
-incomplete_dir = 'data/raw/processed/incomplete'
+complete_dir = 'raw/processed/complete'
+incomplete_dir = 'raw/processed/incomplete'
 
 for file_name in os.listdir(raw_dir):
     # check if the file is a csv file

@@ -10,7 +10,7 @@ from datetime import datetime
 def process(file_path):
     df = pd.read_csv(file_path)
 
-    if 'block' not in df.columns or 'round' not in df.columns or df.groupby(['block', 'round']).ngroups != 160:
+    if 'block' not in df.columns or 'round' not in df.columns or df.groupby(['block', 'round']).ngroups < 145:
         print(f"Error: {file_path} no está completo")
         return False
     
@@ -37,8 +37,10 @@ def process(file_path):
     df1 = df[df['type'] == 'tone_number_task+empty_block+empty_block']
     indices_to_drop = []
 
+    is_valid = lambda row, df, idx1, idx2 : row['task'] == 'tone_number_task' and (math.isnan(df.loc[idx1, 'response']) or (df.loc[idx1, 'response'] in ['a', 's'] and df.loc[idx2, 'response'] in ['j', 'k']))
+
     for index, row in df1.iterrows():
-        if row['task'] == 'tone_number_task' and df1.loc[index + 1, 'response'] in ['a', 's'] and df1.loc[index + 2, 'response'] in ['j', 'k']:
+        if is_valid(row, df1, index + 1, index + 2):
             df1.loc[index, 'response_1'] = df1.loc[index + 1, 'response']
             df1.loc[index, 'rt_1'] = df1.loc[index, 'trial_duration'] + df1.loc[index + 1, 'rt']
             df1.loc[index, 'response_2'] = df1.loc[index + 2, 'response']
@@ -55,7 +57,7 @@ def process(file_path):
     indices_to_drop = []
 
     for index, row in df2.iterrows():
-        if row['task'] == 'tone_number_task' and df2.loc[index, 'response'] in ['a', 's'] and df2.loc[index + 3, 'response'] in ['j', 'k']:
+        if is_valid(row, df2, index, index + 3):
             df2.loc[index, 'response_1'] = df2.loc[index, 'response']
             df2.loc[index, 'rt_1'] = df2.loc[index, 'rt']
             df2.loc[index, 'response_2'] = df2.loc[index + 3, 'response']
@@ -72,7 +74,7 @@ def process(file_path):
     indices_to_drop = []
 
     for index, row in df3.iterrows():
-        if row['task'] == 'tone_number_task' and df3.loc[index, 'response'] in ['a', 's'] and df3.loc[index + 2, 'response'] in ['j', 'k']:
+        if is_valid(row, df3, index, index + 2):
             df3.loc[index, 'response_1'] = df3.loc[index, 'response'] 
             df3.loc[index, 'rt_1'] = df3.loc[index, 'rt']
             df3.loc[index, 'response_2'] = df3.loc[index + 2, 'response']
@@ -88,7 +90,7 @@ def process(file_path):
     indices_to_drop = []
 
     for index, row in df4.iterrows():
-        if row['task'] == 'tone_number_task' and df4.loc[index, 'response'] in ['a', 's'] and df4.loc[index + 2, 'response'] in ['j', 'k']:
+        if is_valid(row, df4, index, index + 2):
             df4.loc[index, 'response_1'] = df4.loc[index, 'response'] 
             df4.loc[index, 'rt_1'] = df4.loc[index, 'rt']
             df4.loc[index, 'response_2'] = df4.loc[index + 2, 'response']
@@ -99,8 +101,26 @@ def process(file_path):
     # After the loop, drop the rows using the list of indices
     df4 = df4.drop(indices_to_drop)
 
+    # type 5: tone_number_task+tone_number_task_remaining_after_delay
+    df5 = df[df['type'] == 'tone_number_task+tone_number_task_remaining_after_delay']
+
+    indices_to_drop = []
+
+    for index, row in df5.iterrows():
+        if is_valid(row, df5, index, index + 1):
+            df5.loc[index, 'response_1'] = df5.loc[index, 'response'] 
+            df5.loc[index, 'rt_1'] = df5.loc[index, 'rt']
+            df5.loc[index, 'response_2'] = df5.loc[index + 1, 'response']
+            # second_task.rt + rt_tone_number_task - delay
+            df5.loc[index, 'rt_2'] = df5.loc[index, 'rt'] - df5.loc[index, 'delay'] + df5.loc[index + 1, 'rt']
+        else:
+            indices_to_drop.append(index)
+
+    # After the loop, drop the rows using the list of indices
+    df5 = df5.drop(indices_to_drop)
+
     # concat all the dataframes
-    df = pd.concat([df1, df2, df3, df4])
+    df = pd.concat([df1, df2, df3, df4, df5])
 
     # remove 'response' and 'rt' columns
     df = df.drop(columns=['response', 'rt'])

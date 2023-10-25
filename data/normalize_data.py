@@ -37,7 +37,7 @@ def process(file_path):
     df1 = df[df['type'] == 'tone_number_task+empty_block+empty_block']
     indices_to_drop = []
 
-    is_valid = lambda row, df, idx1, idx2 : row['task'] == 'tone_number_task' and (math.isnan(df.loc[idx1, 'response']) or (df.loc[idx1, 'response'] in ['a', 's'] and df.loc[idx2, 'response'] in ['j', 'k']))
+    is_valid = lambda row, df, idx1, idx2 : row['task'] == 'tone_number_task' and  ((math.isnan(df.loc[idx1, 'response']) or df.loc[idx1, 'response'] in ['a', 's']) and (math.isnan(df.loc[idx2, 'response']) and df.loc[idx2, 'response'] in ['j', 'k']))
 
     for index, row in df1.iterrows():
         if is_valid(row, df1, index + 1, index + 2):

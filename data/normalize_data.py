@@ -11,7 +11,7 @@ def process(file_path):
     df = pd.read_csv(file_path)
 
     if 'block' not in df.columns or 'round' not in df.columns or df.groupby(['block', 'round']).ngroups < 145:
-        print(f"Error: {file_path} no está completo")
+        print(f"Error: {file_path} no esta completo")
         return False
     
     # get value of 'response' column that starts with '{"gender"'
@@ -138,6 +138,7 @@ raw_dir = 'raw'
 # set the path to the processed directory
 complete_dir = 'raw/processed/complete'
 incomplete_dir = 'raw/processed/incomplete'
+              
 
 for file_name in os.listdir(raw_dir):
     # check if the file is a csv file
@@ -152,7 +153,9 @@ for file_name in os.listdir(raw_dir):
         # get the date with format YYYY-MM-DD-HH-mm-ss
         date = now.strftime("%Y-%m-%d-%H-%M-%S")
 
-        file_name = date + '.csv'
+        run_id = file_name.split(".")[0]
+
+        file_name = f"{date}_{run_id}.csv"
 
         
         if complete:

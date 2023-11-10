@@ -162,3 +162,65 @@ for file_name in os.listdir(raw_dir):
             os.rename(file_path, os.path.join(complete_dir, file_name))
         else:
             os.rename(file_path, os.path.join(incomplete_dir, file_name))
+
+
+
+"""
+palabrasANumeros = {
+  "veintiuno" : 21 ,
+  "veintidós" : 22 ,
+  "veintitres" : 23 ,
+  "veinticuatro" : 24 ,
+  "veinticinco" : 25 ,
+  "veintiseis" : 26 ,
+  "veintisiete" : 27 ,
+  "veintiocho" : 28 ,
+  "veintinueve" : 29 ,
+  "treinta" : 30 ,
+  "treinta y uno" : 31 ,
+  "treinta y dos" : 32 ,
+  "treinta y tres" : 33 ,
+  "treinta y cuatro" : 34 ,
+  "treinta y cinco" : 35 ,
+  "treinta y seis" : 36 ,
+  "treinta y siete" : 37 ,
+  "treinta y ocho" : 38 ,
+  "treinta y nueve" : 39 ,
+  "cuarenta" : 40 ,
+  "cuarenta y uno" : 41 ,
+  "cuarenta y dos" : 42 ,
+  "cuarenta y tres" : 43 ,
+  "cuarenta y cuatro" : 44 ,
+  "cuarenta y seis" : 46 ,
+  "cuarenta y siete" : 47 ,
+  "cuarenta y ocho" : 48 ,
+  "cuarenta y nueve" : 49 ,
+  "cincuenta" : 50 ,
+  "cincuenta y uno" : 51 ,
+  "cincuenta y dos" : 52 ,
+  "cincuenta y tres" : 53 ,
+  "cincuenta y cuatro" : 54 ,
+  "cincuenta y cinco" : 55 ,
+  "cincuenta y seis" : 56 ,
+  "cincuenta y siete" : 57 ,
+  "cincuenta y ocho" : 58 ,
+  "cincuenta y nueve" : 59 ,
+  "sesenta" : 60 ,
+  "sesenta y uno" : 61 ,
+  "sesenta y dos" : 62 ,
+  "sesenta y tres" : 63 ,
+  "sesenta y cuatro" : 64 ,
+  "sesenta y cinco" : 65 ,
+  "sesenta y seis" : 66 ,
+  "sesenta y siete" : 67 ,
+  "sesenta y ocho" : 68 ,
+  "sesenta y nueve" : 69 ,
+}
+
+for file in corpus_files:
+    file_df = pd.read_csv(f"{corpus_dir}/{file}")
+    traducir = lambda n : palabrasANumeros[n] if n in palabrasANumeros else int(n)
+    file_df["is_word"] = file_df.apply(lambda row : not row.number.isdigit(), axis=1)
+    file_df["number"] = file_df.apply(lambda row : traducir(row.number), axis=1)
+    file_df.to_csv(f"{corpus_dir}/{file}", index=False)
+"""
